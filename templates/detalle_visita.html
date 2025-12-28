@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block contenido %}
+
+<h2>Detalle de Visita</h2>
+
+{% if detalle %}
+    <p><strong>Visitado por:</strong> {{ detalle.visitado_por }}</p>
+    <p><strong>Fecha de visita:</strong> {{ detalle.fecha_visita }}</p>
+    <p><strong>Nota:</strong> {{ detalle.nota or '—' }}</p>
+
+    <a href="/visitas">← Volver</a>
+
+{% else %}
+<form method="post" class="form-visita">
+    <label>Visitado por</label>
+    <select name="visitado_por" required>
+        <option value="">Seleccione</option>
+        <option>Sociedad de Jóvenes</option>
+        <option>Sociedad de Damas</option>
+        <option>Sociedad de Caballeros</option>
+        <option>Directiva Local</option>
+        <option>Familia Pastoral</option>
+        <option>Visita Mixta</option>
+    </select>
+
+    <label>Fecha de la visita</label>
+    <input type="date" name="fecha_visita" required>
+
+    <label>Nota (opcional)</label>
+    <textarea name="nota" rows="3"></textarea>
+
+    <button>Guardar</button>
+</form>
+
+<a href="/visitas">← Volver</a>
+{% endif %}
+
+{% endblock %}

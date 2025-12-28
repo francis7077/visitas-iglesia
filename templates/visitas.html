@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block contenido %}
+
+{# 🔐 Seguridad: si no está logueado, redirige #}
+{% if not session.get("logueado") %}
+    <script>
+        window.location.href = "/login";
+    </script>
+{% endif %}
+
+<h1>Visitas Registradas</h1>
+
+<!-- 🔍 Filtros por fecha -->
+<form method="get" class="filtros">
+    Desde
+    <input type="date" name="desde" value="{{ desde }}">
+    Hasta
+    <input type="date" name="hasta" value="{{ hasta }}">
+    <button type="submit">Filtrar</button>
+</form>
+
+<!-- ⚙️ Acciones -->
+<div class="acciones">
+    <button id="btnImprimir" disabled>🖨️ Imprimir</button>
+    <button id="btnEditar" disabled>✏️ Editar</button>
+    <button id="btnEliminar" disabled>🗑️ Eliminar</button>
+</div>
+
+<!-- 📋 Tabla -->
+<table id="tablaVisitas">
+    <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Nombre</th>
+            <th>Invitado por</th>
+            <th>Visitado</th>
+            <th>Detalle de visita</th>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for r in visitas %}
+        <tr data-id="{{ r['id'] }}" onclick="seleccionarFila(this)">
+            
+            <!-- 📅 Fecha formato DMA -->
+            <td>
+                {{ r['fecha'].split('-')[2] }}/{{ r['fecha'].split('-')[1] }}/{{ r['fecha'].split('-')[0] }}
+            </td>
+
+            <!-- 👤 Nombre -->
+            <td>
+                <a href="/perfil/{{ r['id'] }}" onclick="event.stopPropagation()">
+                    <strong>{{ r['nombre'] }}</strong>
+                </a>
+            </td>
+
+            <!-- 🤝 Invitado por -->
+            <td>{{ r['invitado_por'] }}</td>
+
+            <!-- ✅ Visitado -->
+            <td>
+                {% if r['visitado'] == 'Si' %}
+                    🟢 Sí
+                {% else %}
+                    🔴 No<br>
+                    <a href="/visitar/{{ r['id'] }}" onclick="event.stopPropagation()">
+                        Marcar visitado
+                    </a>
+                {% endif %}
+            </td>
+
+            <!-- 📄 Detalle -->
+            <td>
+                {% if r['visitado'] == 'Si' %}
+                    <a href="/visitar/{{ r['id'] }}" onclick="event.stopPropagation()">
+                        📄 Ver detalle
+                    </a>
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="5" style="text-align:center; padding:15px;">
+                No hay visitas registradas en este período
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<a href="/">← Volver al registro</a>
+
+<!-- 🧠 Lógica JS -->
+<script>
+let idSeleccionado = null;
+
+function seleccionarFila(fila) {
+    document.querySelectorAll("#tablaVisitas tbody tr")
+        .forEach(tr => tr.classList.remove("fila-activa"));
+
+    fila.classList.add("fila-activa");
+    idSeleccionado = fila.dataset.id;
+
+    document.getElementById("btnEditar").disabled = false;
+    document.getElementById("btnEliminar").disabled = false;
+}
+
+// ✏️ Editar
+document.getElementById("btnEditar").onclick = function () {
+    if (idSeleccionado) {
+        window.location.href = "/editar/" + idSeleccionado;
+    }
+};
+
+// 🗑️ Eliminar
+document.getElementById("btnEliminar").onclick = function () {
+    if (idSeleccionado && confirm("¿Desea eliminar este registro?")) {
+        window.location.href = "/eliminar/" + idSeleccionado;
+    }
+};
+
+// 🖨️ Imprimir solo si hay filtro
+const desde = "{{ desde }}";
+const hasta = "{{ hasta }}";
+const btnImprimir = document.getElementById("btnImprimir");
+
+if (desde && hasta) {
+    btnImprimir.disabled = false;
+}
+
+btnImprimir.onclick = function () {
+    if (desde && hasta) {
+        window.open(`/imprimir?desde=${desde}&hasta=${hasta}`, "_blank");
+    }
+};
+</script>
+
+{% endblock %}

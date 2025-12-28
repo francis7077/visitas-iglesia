@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Reporte de Visitas</title>
+<style>
+body { font-family: Arial; }
+table { width: 100%; border-collapse: collapse; }
+th, td { border: 1px solid #000; padding: 6px; }
+</style>
+</head>
+
+<body onload="window.print()">
+
+<h3>Reporte de Visitas a la Iglesia</h3>
+<p>Desde {{ desde }} hasta {{ hasta }}</p>
+
+<table>
+<tr>
+    <th>Fecha</th>
+    <th>Nombre</th>
+    <th>Invitado por</th>
+    <th>Visitado</th>
+</tr>
+
+{% for v in visitas %}
+<tr>
+    <td>{{ v.fecha }}</td>
+    <td>{{ v.nombre }}</td>
+    <td>{{ v.invitado_por }}</td>
+    <td>{{ v.visitado }}</td>
+</tr>
+{% endfor %}
+
+</table>
+
+</body>
+</html>

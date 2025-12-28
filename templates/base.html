@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistencia Iglesia</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<nav>
+    {% if session.get("logueado") %}
+        <a href="/visitas">Visitas registradas</a> |
+        <a href="/logout">Cerrar sesión</a>
+    {% else %}
+        <a href="/">Registro</a> |
+        <a href="/login">Iniciar sesión</a>
+    {% endif %}
+</nav>
+
+<hr>
+
+<div class="contenedor">
+    {% block contenido %}{% endblock %}
+</div>
+
+</body>
+</html>

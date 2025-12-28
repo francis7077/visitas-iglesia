@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block contenido %}
+
+<h2>Registro de Visitas a la Iglesia</h2>
+
+<form method="post">
+    <label>Fecha de asistencia</label>
+    <input type="date" name="fecha" class="input-fecha" required>
+
+    <label>Servicio</label>
+    <select name="servicio" class="input-select-corto">
+        <option>Servicio dominical</option>
+          <option>Servicio los viernes</option>
+        <option>Servicio de jóvenes</option>
+        <option>Servicio de damas</option>
+        <option>Servicio de caballeros</option>
+        <option>Retiro</option>
+        <option>Otro</option>
+    </select>
+
+    <label>Nombre</label>
+    <input name="nombre" class="input-medio" required>
+
+    <label>Dirección</label>
+    <input name="direccion" class="input-largo">
+
+    <label>Teléfono</label>
+    <input name="telefono" class="input-telefono">
+
+    <label>Invitado por</label>
+    <input name="invitado_por" class="input-medio">
+
+    <label>Sexo</label>
+    <select name="sexo" class="input-select-corto">
+        <option>Masculino</option>
+        <option>Femenino</option>
+    </select>
+
+    <label>Rango de edad</label>
+    <select name="rango_edad" class="input-select-corto">
+        <option>0–5 años</option>
+        <option>6–10 años</option>
+        <option>11–17 años</option>
+        <option>18–25 años</option>
+        <option>26–34 años</option>
+        <option>35–44 años</option>
+        <option>45–59 años</option>
+        <option>60 años o más</option>
+    </select>
+
+    <label>¿Necesita visita a su casa?</label>
+    <select name="visita_casa" class="input-select-corto">
+        <option>Sí</option>
+        <option>No</option>
+    </select>
+
+    <button>Guardar</button>
+    <a href="/visitas" class="btn-secundario">Ver visitas</a>
+</form>
+
+{% endblock %}

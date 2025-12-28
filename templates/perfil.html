@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block contenido %}
+
+<h2>Perfil de Visita</h2>
+
+<ul class="perfil">
+    <li><strong>Nombre:</strong> {{ p.nombre }}</li>
+    <li><strong>Fecha:</strong> {{ p.fecha }}</li>
+    <li><strong>Servicio:</strong> {{ p.servicio }}</li>
+    <li><strong>Dirección:</strong> {{ p.direccion }}</li>
+    <li><strong>Teléfono:</strong> {{ p.telefono }}</li>
+    <li><strong>Invitado por:</strong> {{ p.invitado_por }}</li>
+    <li><strong>Sexo:</strong> {{ p.sexo }}</li>
+    <li><strong>Rango de edad:</strong> {{ p.rango_edad }}</li>
+    <li><strong>Necesita visita:</strong> {{ p.visita_casa }}</li>
+    <li><strong>Visitado:</strong> {{ p.visitado }}</li>
+</ul>
+
+<a href="/visitas">← Volver</a>
+
+{% endblock %}
