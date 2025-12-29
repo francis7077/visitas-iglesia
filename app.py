@@ -1,18 +1,20 @@
 from flask import Flask, render_template, request, redirect, session
-import sqlite3
+import os
+import psycopg2
+from psycopg2.extras import RealDictCursor
 
 app = Flask(__name__)
-app.secret_key = "clave_super_secreta_cambia_esto"
+app.secret_key = os.environ.get("SECRET_KEY", "clave_temporal")
 
 # ---------------- USUARIO / CLAVE ----------------
 USUARIO_ADMIN = "admin"
 CLAVE_ADMIN = "1234"
 
-# ---------------- CONEXIÓN ----------------
+# ---------------- CONEXIÓN POSTGRES ----------------
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
 def conectar():
-    conn = sqlite3.connect("asistencia.db")
-    conn.row_factory = sqlite3.Row
-    return conn
+    return psycopg2.connect(DATABASE_URL, cursor_factory=RealDictCursor)
 
 # ---------------- TABLAS ----------------
 def crear_tablas():
@@ -21,8 +23,8 @@ def crear_tablas():
 
     c.execute("""
     CREATE TABLE IF NOT EXISTS visitas (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        fecha TEXT,
+        id SERIAL PRIMARY KEY,
+        fecha DATE,
         servicio TEXT,
         nombre TEXT,
         direccion TEXT,
@@ -37,10 +39,10 @@ def crear_tablas():
 
     c.execute("""
     CREATE TABLE IF NOT EXISTS detalle_visita (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        visita_id INTEGER UNIQUE,
+        id SERIAL PRIMARY KEY,
+        visita_id INTEGER UNIQUE REFERENCES visitas(id) ON DELETE CASCADE,
         visitado_por TEXT,
-        fecha_visita TEXT,
+        fecha_visita DATE,
         nota TEXT
     )
     """)
@@ -65,24 +67,24 @@ def login():
 
     return render_template("login.html")
 
-
 # ---------- LOGOUT ----------
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect("/login")
 
-
 # ---------- REGISTRO (PÚBLICO) ----------
 @app.route("/", methods=["GET", "POST"])
 def registro():
     if request.method == "POST":
         conn = conectar()
-        conn.execute("""
+        c = conn.cursor()
+
+        c.execute("""
         INSERT INTO visitas
         (fecha, servicio, nombre, direccion, telefono,
          invitado_por, sexo, rango_edad, visita_casa)
-        VALUES (?,?,?,?,?,?,?,?,?)
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
         """, (
             request.form["fecha"],
             request.form["servicio"],
@@ -94,14 +96,14 @@ def registro():
             request.form["rango_edad"],
             request.form["visita_casa"]
         ))
+
         conn.commit()
         conn.close()
         return redirect("/")
 
     return render_template("registro.html")
 
-
-# ---------- VER VISITAS (PROTEGIDO) ----------
+# ---------- VER VISITAS ----------
 @app.route("/visitas")
 def visitas():
     if not session.get("logueado"):
@@ -114,57 +116,52 @@ def visitas():
     params = []
 
     if desde:
-        query += " AND fecha >= ?"
+        query += " AND fecha >= %s"
         params.append(desde)
 
     if hasta:
-        query += " AND fecha <= ?"
+        query += " AND fecha <= %s"
         params.append(hasta)
 
     query += " ORDER BY fecha DESC"
 
     conn = conectar()
-    visitas = conn.execute(query, params).fetchall()
+    c = conn.cursor()
+    c.execute(query, params)
+    visitas = c.fetchall()
     conn.close()
 
-    return render_template(
-        "visitas.html",
-        visitas=visitas,
-        desde=desde,
-        hasta=hasta
-    )
+    return render_template("visitas.html", visitas=visitas, desde=desde, hasta=hasta)
 
-
-# ---------- PERFIL (PROTEGIDO) ----------
+# ---------- PERFIL ----------
 @app.route("/perfil/<int:id>")
 def perfil(id):
     if not session.get("logueado"):
         return redirect("/login")
 
     conn = conectar()
-    p = conn.execute(
-        "SELECT * FROM visitas WHERE id=?",
-        (id,)
-    ).fetchone()
+    c = conn.cursor()
+    c.execute("SELECT * FROM visitas WHERE id=%s", (id,))
+    p = c.fetchone()
     conn.close()
 
     return render_template("perfil.html", p=p)
 
-
-# ---------- EDITAR (PROTEGIDO) ----------
+# ---------- EDITAR ----------
 @app.route("/editar/<int:id>", methods=["GET", "POST"])
 def editar(id):
     if not session.get("logueado"):
         return redirect("/login")
 
     conn = conectar()
+    c = conn.cursor()
 
     if request.method == "POST":
-        conn.execute("""
+        c.execute("""
         UPDATE visitas SET
-            fecha=?, servicio=?, nombre=?, direccion=?, telefono=?,
-            invitado_por=?, sexo=?, rango_edad=?, visita_casa=?
-        WHERE id=?
+            fecha=%s, servicio=%s, nombre=%s, direccion=%s, telefono=%s,
+            invitado_por=%s, sexo=%s, rango_edad=%s, visita_casa=%s
+        WHERE id=%s
         """, (
             request.form["fecha"],
             request.form["servicio"],
@@ -181,46 +178,42 @@ def editar(id):
         conn.close()
         return redirect("/visitas")
 
-    r = conn.execute(
-        "SELECT * FROM visitas WHERE id=?",
-        (id,)
-    ).fetchone()
+    c.execute("SELECT * FROM visitas WHERE id=%s", (id,))
+    r = c.fetchone()
     conn.close()
 
     return render_template("editar.html", r=r)
 
-
-# ---------- ELIMINAR (PROTEGIDO) ----------
+# ---------- ELIMINAR ----------
 @app.route("/eliminar/<int:id>")
 def eliminar(id):
     if not session.get("logueado"):
         return redirect("/login")
 
     conn = conectar()
-    conn.execute("DELETE FROM visitas WHERE id=?", (id,))
+    c = conn.cursor()
+    c.execute("DELETE FROM visitas WHERE id=%s", (id,))
     conn.commit()
     conn.close()
     return redirect("/visitas")
 
-
-# ---------- VISITAR / DETALLE (PROTEGIDO) ----------
+# ---------- VISITAR ----------
 @app.route("/visitar/<int:id>", methods=["GET", "POST"])
 def visitar(id):
     if not session.get("logueado"):
         return redirect("/login")
 
     conn = conectar()
+    c = conn.cursor()
 
-    detalle = conn.execute(
-        "SELECT * FROM detalle_visita WHERE visita_id=?",
-        (id,)
-    ).fetchone()
+    c.execute("SELECT * FROM detalle_visita WHERE visita_id=%s", (id,))
+    detalle = c.fetchone()
 
     if request.method == "POST" and detalle is None:
-        conn.execute("""
+        c.execute("""
         INSERT INTO detalle_visita
         (visita_id, visitado_por, fecha_visita, nota)
-        VALUES (?,?,?,?)
+        VALUES (%s,%s,%s,%s)
         """, (
             id,
             request.form["visitado_por"],
@@ -228,23 +221,13 @@ def visitar(id):
             request.form.get("nota", "")
         ))
 
-        conn.execute(
-            "UPDATE visitas SET visitado='Si' WHERE id=?",
-            (id,)
-        )
-
+        c.execute("UPDATE visitas SET visitado='Si' WHERE id=%s", (id,))
         conn.commit()
 
     conn.close()
+    return render_template("detalle_visita.html", detalle=detalle, id=id)
 
-    return render_template(
-        "detalle_visita.html",
-        detalle=detalle,
-        id=id
-    )
-
-
-# ---------- IMPRIMIR (PROTEGIDO) ----------
+# ---------- IMPRIMIR ----------
 @app.route("/imprimir")
 def imprimir():
     if not session.get("logueado"):
@@ -254,22 +237,14 @@ def imprimir():
     hasta = request.args.get("hasta")
 
     conn = conectar()
-    visitas = conn.execute("""
+    c = conn.cursor()
+    c.execute("""
         SELECT fecha, nombre, invitado_por, visitado
         FROM visitas
-        WHERE fecha BETWEEN ? AND ?
+        WHERE fecha BETWEEN %s AND %s
         ORDER BY fecha
-    """, (desde, hasta)).fetchall()
+    """, (desde, hasta))
+    visitas = c.fetchall()
     conn.close()
 
-    return render_template(
-        "imprimir.html",
-        visitas=visitas,
-        desde=desde,
-        hasta=hasta
-    )
-
-
-# ---------- MAIN ----------
-if __name__ == "__main__":
-    app.run(debug=True)
+    return render_template("imprimir.html", visitas=visitas, desde=desde, hasta=hasta)
