@@ -2,13 +2,10 @@ from flask import Flask, render_template, request, redirect, session
 import os
 import psycopg2
 from psycopg2.extras import RealDictCursor
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "clave_temporal")
-
-# ---------------- USUARIO / CLAVE ----------------
-USUARIO_ADMIN = "admin"
-CLAVE_ADMIN = "1234"
 
 # ---------------- CONEXIÓN POSTGRES ----------------
 DATABASE_URL = os.environ.get("DATABASE_URL")
@@ -21,6 +18,7 @@ def crear_tablas():
     conn = conectar()
     c = conn.cursor()
 
+    # Visitas
     c.execute("""
     CREATE TABLE IF NOT EXISTS visitas (
         id SERIAL PRIMARY KEY,
@@ -37,6 +35,7 @@ def crear_tablas():
     )
     """)
 
+    # Detalle visita
     c.execute("""
     CREATE TABLE IF NOT EXISTS detalle_visita (
         id SERIAL PRIMARY KEY,
@@ -46,6 +45,31 @@ def crear_tablas():
         nota TEXT
     )
     """)
+
+    # Usuarios
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS usuarios (
+        id SERIAL PRIMARY KEY,
+        usuario TEXT UNIQUE,
+        password TEXT,
+        nombre TEXT
+    )
+    """)
+
+    # Crear usuarios por defecto si no existen
+    usuarios_default = [
+        ("pastor", "Salmo1263103", "Pastor"),
+        ("secretaria", "Visitas126", "Secretaria"),
+        ("asistente", "Iglesia126", "Asistente")
+    ]
+
+    for u, p, n in usuarios_default:
+        c.execute("SELECT id FROM usuarios WHERE usuario=%s", (u,))
+        if not c.fetchone():
+            c.execute(
+                "INSERT INTO usuarios (usuario, password, nombre) VALUES (%s,%s,%s)",
+                (u, generate_password_hash(p), n)
+            )
 
     conn.commit()
     conn.close()
@@ -59,8 +83,16 @@ def login():
         usuario = request.form["usuario"]
         clave = request.form["clave"]
 
-        if usuario == USUARIO_ADMIN and clave == CLAVE_ADMIN:
+        conn = conectar()
+        c = conn.cursor()
+        c.execute("SELECT * FROM usuarios WHERE usuario=%s", (usuario,))
+        user = c.fetchone()
+        conn.close()
+
+        if user and check_password_hash(user["password"], clave):
             session["logueado"] = True
+            session["usuario"] = user["usuario"]
+            session["nombre"] = user["nombre"]
             return redirect("/visitas")
 
         return render_template("login.html", error="Credenciales incorrectas")
@@ -103,10 +135,14 @@ def registro():
 
     return render_template("registro.html")
 
+# ---------- PROTECCIÓN ----------
+def protegido():
+    return not session.get("logueado")
+
 # ---------- VER VISITAS ----------
 @app.route("/visitas")
 def visitas():
-    if not session.get("logueado"):
+    if protegido():
         return redirect("/login")
 
     desde = request.args.get("desde")
@@ -136,7 +172,7 @@ def visitas():
 # ---------- PERFIL ----------
 @app.route("/perfil/<int:id>")
 def perfil(id):
-    if not session.get("logueado"):
+    if protegido():
         return redirect("/login")
 
     conn = conectar()
@@ -150,7 +186,7 @@ def perfil(id):
 # ---------- EDITAR ----------
 @app.route("/editar/<int:id>", methods=["GET", "POST"])
 def editar(id):
-    if not session.get("logueado"):
+    if protegido():
         return redirect("/login")
 
     conn = conectar()
@@ -187,7 +223,7 @@ def editar(id):
 # ---------- ELIMINAR ----------
 @app.route("/eliminar/<int:id>")
 def eliminar(id):
-    if not session.get("logueado"):
+    if protegido():
         return redirect("/login")
 
     conn = conectar()
@@ -200,7 +236,7 @@ def eliminar(id):
 # ---------- VISITAR ----------
 @app.route("/visitar/<int:id>", methods=["GET", "POST"])
 def visitar(id):
-    if not session.get("logueado"):
+    if protegido():
         return redirect("/login")
 
     conn = conectar()
@@ -230,7 +266,7 @@ def visitar(id):
 # ---------- IMPRIMIR ----------
 @app.route("/imprimir")
 def imprimir():
-    if not session.get("logueado"):
+    if protegido():
         return redirect("/login")
 
     desde = request.args.get("desde")
