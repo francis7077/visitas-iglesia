@@ -1,22 +1,31 @@
 {% extends "base.html" %}
 {% block contenido %}
 
-<h2>Acceso restringido</h2>
+<h2>🔐 Acceso a Visitas Registradas</h2>
+<p>Ingrese su usuario y contraseña para continuar</p>
 
 {% if error %}
-<p style="color:red">{{ error }}</p>
+    <div style="color:#b00020; background:#ffe5e5; padding:10px; border-radius:5px; margin-bottom:10px;">
+        {{ error }}
+    </div>
 {% endif %}
 
-<form method="post">
+<form method="post" class="form-login">
+
     <label>Usuario</label>
-    <input type="text" name="usuario" required>
+    <input type="text" name="usuario" placeholder="Pastor, Secretaria o Asistente" required autofocus>
 
     <label>Contraseña</label>
-    <input type="password" name="clave" required>
+    <input type="password" name="clave" placeholder="Ingrese su contraseña" required>
 
-    <button>Entrar</button>
+    <button type="submit">🔓 Iniciar sesión</button>
+
 </form>
 
-<a href="/">← Volver</a>
+<p style="margin-top:15px; font-size:14px; color:#555;">
+    Acceso autorizado solo para personal de la iglesia.
+</p>
+
+<a href="/" style="display:block; margin-top:20px;">← Volver al registro público</a>
 
 {% endblock %}
