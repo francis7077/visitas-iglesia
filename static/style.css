@@ -5,10 +5,10 @@
 }
 
 body {
-  margin: 20px;
+  margin: 16px;
   background: #f4f6f8;
   color: #333;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 /* ===== LINKS ===== */
@@ -21,112 +21,102 @@ a:hover {
 }
 
 /* ===== TITULOS ===== */
-h2, h1 {
-  font-weight: bold;
-  margin-bottom: 15px;
-  color: #333;
+h1, h2 {
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #222;
+  text-align: center;
 }
 
 /* ===== FORMULARIOS ===== */
 form {
   background: #ffffff;
-  padding: 25px 30px;
-  border-radius: 10px;
+  padding: 22px;
+  border-radius: 14px;
   max-width: 900px;
-  margin: 0 auto 20px auto;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  margin: 0 auto 18px auto;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
 }
 
 label {
   display: block;
   margin-top: 12px;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 input, select {
-  padding: 8px 10px;
-  margin-top: 5px;
+  padding: 10px 12px;
+  margin-top: 6px;
   border: 1px solid #ccc;
-  border-radius: 6px;
+  border-radius: 10px;
   font-size: 14px;
-  transition: border-color 0.3s;
+  width: 100%;
+  transition: all 0.2s ease;
 }
 
 input:focus, select:focus {
   border-color: #4a6cf7;
+  box-shadow: 0 0 0 2px rgba(74,108,247,.15);
   outline: none;
 }
 
-/* ===== TAMAÑOS DE INPUTS ===== */
-.input-fecha { width: 180px; }
-.input-select-corto { width: 200px; }
-.input-telefono { width: 180px; }
-.input-medio { width: 48%; }
+/* ===== TAMAÑOS ===== */
+.input-fecha { max-width: 180px; }
+.input-select-corto { max-width: 220px; }
+.input-telefono { max-width: 180px; }
+.input-medio { max-width: 48%; }
 .input-largo { width: 100%; }
 
 /* ===== BOTONES ===== */
 button {
   margin-top: 10px;
   padding: 10px 18px;
-  background-color: #4a6cf7;
+  background: linear-gradient(135deg, #4a6cf7, #3a5ad9);
   color: #fff;
   border: none;
-  border-radius: 10px;
+  border-radius: 30px;
   cursor: pointer;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-  transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
-}
-button:hover {
-  background-color: #3a5ad9;
-  transform: translateY(-1px);
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  transition: all 0.2s ease;
 }
 
-/* ===== BOTÓN VOLVER ===== */
-.btn-volver {
-  display: inline-flex;
-  align-items: center;
-  padding: 8px 12px;
-  background-color: #4a6cf7;
-  color: #fff;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-}
-.btn-volver svg {
-  margin-right: 5px;
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.15);
 }
 
 /* ===== TABLAS ===== */
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 15px;
+  margin-top: 14px;
   background: #fff;
-  border-radius: 10px;
+  border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
 th, td {
   padding: 12px 10px;
-  text-align: left;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #eee;
 }
 
 th {
-  background-color: #f4f6f8;
-  font-weight: bold;
+  background: #f0f3f9;
+  font-size: 14px;
+  color: #333;
 }
 
 tr:hover {
-  background-color: #f9f9f9;
+  background-color: #f8faff;
 }
 
 /* ===== FILA SELECCIONADA ===== */
 .fila-activa {
-  background-color: #dce7ff !important;
-  border-left: 4px solid #4a6cf7;
+  background-color: #e7efff !important;
+  border-left: 5px solid #4a6cf7;
 }
 
 /* ===== FILTROS ===== */
@@ -135,110 +125,71 @@ tr:hover {
   flex-wrap: wrap;
   gap: 8px;
   justify-content: center;
-  margin-bottom: 10px;
+  background: #fff;
+  padding: 12px;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,.05);
 }
 
-.filtros input,
-.filtros button {
-  padding: 6px 10px;
-  font-size: 13px;
-  border-radius: 8px;
-}
-
-/* ===== ACCIONES (IMPRIMIR, EDITAR, ELIMINAR) ===== */
+/* ===== ACCIONES ===== */
 .acciones {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
   justify-content: center;
-  margin: 10px 0 15px 0;
+  gap: 10px;
+  position: sticky;
+  top: 0;
+  background: #f4f6f8;
+  padding: 12px 0;
+  z-index: 100;
 }
 
 .acciones button {
-  padding: 6px 14px;
+  padding: 8px 16px;
   font-size: 13px;
-  border-radius: 20px;
-  background: #4a6cf7;
-  color: white;
-  border: none;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-}
-
-.acciones button:hover {
-  background: #3a5ad9;
+  border-radius: 30px;
 }
 
 .acciones button:disabled {
-  background: #cfd6f5;
+  background: #d6d9f0;
   color: #777;
   cursor: not-allowed;
   box-shadow: none;
 }
 
-/* ===== RESPONSIVE (CELULAR) ===== */
-@media (max-width: 768px) {
-  body {
-    margin: 10px;
-  }
-
-  form {
-    padding: 15px;
-  }
-
-  input, select {
-    font-size: 13px;
-  }
-
-  table {
-    font-size: 13px;
-  }
-
-  th, td {
-    padding: 8px 6px;
-  }
-
-  .acciones {
-    position: sticky;
-    top: 0;
-    background: #f4f6f8;
-    padding: 8px 0;
-    z-index: 10;
-  }
-
-  .filtros {
-    background: #ffffff;
-    padding: 10px;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  }
-}
-
 /* ===== PERFIL ===== */
 .tarjeta-perfil {
-    background: #ffffff;
-    max-width: 700px;
-    margin: 0 auto;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+  background: #ffffff;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
 }
 
 .perfil-fila {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px 10px;
-    border-bottom: 1px solid #eee;
-    font-size: 15px;
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  font-size: 15px;
 }
 
 .perfil-fila:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }
 
-.perfil-fila span {
-    color: #555;
-}
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  body { margin: 10px; }
 
-.perfil-fila strong {
-    color: #222;
+  h1, h2 { font-size: 1.2em; }
+
+  .filtros, .acciones {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .acciones button {
+    width: 100%;
+  }
 }
