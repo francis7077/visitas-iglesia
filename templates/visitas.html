@@ -76,4 +76,46 @@
 
 <a href="/">← Volver al registro</a>
 
+<script>
+let idSeleccionado = null;
+
+function seleccionarFila(fila) {
+    document.querySelectorAll("#tablaVisitas tbody tr").forEach(tr => {
+        tr.classList.remove("fila-activa");
+    });
+
+    fila.classList.add("fila-activa");
+    idSeleccionado = fila.dataset.id;
+
+    document.getElementById("btnEditar").disabled = false;
+    document.getElementById("btnEliminar").disabled = false;
+}
+
+document.getElementById("btnEditar").onclick = function () {
+    if (idSeleccionado) {
+        window.location.href = "/editar/" + idSeleccionado;
+    }
+};
+
+document.getElementById("btnEliminar").onclick = function () {
+    if (idSeleccionado && confirm("¿Desea eliminar este registro?")) {
+        window.location.href = "/eliminar/" + idSeleccionado;
+    }
+};
+
+const desde = "{{ desde }}";
+const hasta = "{{ hasta }}";
+const btnImprimir = document.getElementById("btnImprimir");
+
+if (desde && hasta) {
+    btnImprimir.disabled = false;
+}
+
+btnImprimir.onclick = function () {
+    if (desde && hasta) {
+        window.open(`/imprimir?desde=${desde}&hasta=${hasta}`, "_blank");
+    }
+};
+</script>
+
 {% endblock %}
