@@ -3,6 +3,7 @@ import os
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from werkzeug.security import generate_password_hash, check_password_hash
+from functools import wraps
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "clave_temporal")
@@ -12,6 +13,23 @@ DATABASE_URL = os.environ.get("DATABASE_URL")
 
 def conectar():
     return psycopg2.connect(DATABASE_URL, cursor_factory=RealDictCursor)
+
+# ---------------- CONTEXTO GLOBAL (USUARIO EN PLANTILLAS) ----------------
+@app.context_processor
+def datos_usuario():
+    return {
+        "usuario_logueado": session.get("nombre"),
+        "rol": session.get("usuario")
+    }
+
+# ---------------- SEGURIDAD ----------------
+def requiere_login(f):
+    @wraps(f)
+    def decorador(*args, **kwargs):
+        if not session.get("logueado"):
+            return redirect("/login")
+        return f(*args, **kwargs)
+    return decorador
 
 # ---------------- TABLAS ----------------
 def crear_tablas():
@@ -80,8 +98,17 @@ crear_tablas()
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        usuario = request.form["usuario"]
+        usuario_input = request.form["usuario"].strip()
         clave = request.form["clave"]
+
+        # Permitir solo Pastor/pastor, Secretaria/secretaria, Asistente/asistente
+        if not (
+            usuario_input.lower() in ["pastor", "secretaria", "asistente"] and
+            (usuario_input == usuario_input.lower() or usuario_input == usuario_input.capitalize())
+        ):
+            return render_template("login.html", error="Usuario inválido")
+
+        usuario = usuario_input.lower()
 
         conn = conectar()
         c = conn.cursor()
@@ -135,16 +162,10 @@ def registro():
 
     return render_template("registro.html")
 
-# ---------- PROTECCIÓN ----------
-def protegido():
-    return not session.get("logueado")
-
 # ---------- VER VISITAS ----------
 @app.route("/visitas")
+@requiere_login
 def visitas():
-    if protegido():
-        return redirect("/login")
-
     desde = request.args.get("desde")
     hasta = request.args.get("hasta")
 
@@ -171,10 +192,8 @@ def visitas():
 
 # ---------- PERFIL ----------
 @app.route("/perfil/<int:id>")
+@requiere_login
 def perfil(id):
-    if protegido():
-        return redirect("/login")
-
     conn = conectar()
     c = conn.cursor()
     c.execute("SELECT * FROM visitas WHERE id=%s", (id,))
@@ -185,10 +204,8 @@ def perfil(id):
 
 # ---------- EDITAR ----------
 @app.route("/editar/<int:id>", methods=["GET", "POST"])
+@requiere_login
 def editar(id):
-    if protegido():
-        return redirect("/login")
-
     conn = conectar()
     c = conn.cursor()
 
@@ -222,10 +239,8 @@ def editar(id):
 
 # ---------- ELIMINAR ----------
 @app.route("/eliminar/<int:id>")
+@requiere_login
 def eliminar(id):
-    if protegido():
-        return redirect("/login")
-
     conn = conectar()
     c = conn.cursor()
     c.execute("DELETE FROM visitas WHERE id=%s", (id,))
@@ -235,10 +250,8 @@ def eliminar(id):
 
 # ---------- VISITAR ----------
 @app.route("/visitar/<int:id>", methods=["GET", "POST"])
+@requiere_login
 def visitar(id):
-    if protegido():
-        return redirect("/login")
-
     conn = conectar()
     c = conn.cursor()
 
@@ -265,10 +278,8 @@ def visitar(id):
 
 # ---------- IMPRIMIR ----------
 @app.route("/imprimir")
+@requiere_login
 def imprimir():
-    if protegido():
-        return redirect("/login")
-
     desde = request.args.get("desde")
     hasta = request.args.get("hasta")
 

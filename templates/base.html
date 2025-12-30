@@ -9,34 +9,56 @@
 
     <style>
         .topbar {
-            background: #4a6cf7;
+            background: linear-gradient(135deg, #4a6cf7, #3a5ad9);
             color: white;
             padding: 12px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-radius: 12px;
+            border-radius: 14px;
             margin-bottom: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.15);
         }
 
         .topbar .logo {
             font-weight: bold;
             font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .topbar .menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
         .topbar .menu a {
             color: white;
             text-decoration: none;
-            margin-left: 12px;
-            font-size: 14px;
-            padding: 6px 10px;
-            border-radius: 8px;
-            transition: background 0.2s;
+            font-size: 13px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.15);
+            transition: background 0.2s, transform 0.1s;
         }
 
         .topbar .menu a:hover {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-1px);
+        }
+
+        .usuario-badge {
+            background: rgba(255,255,255,0.25);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .contenedor {
@@ -47,8 +69,12 @@
         @media (max-width: 768px) {
             .topbar {
                 flex-direction: column;
-                gap: 8px;
+                gap: 10px;
                 text-align: center;
+            }
+
+            .topbar .menu {
+                justify-content: center;
             }
         }
     </style>
@@ -62,7 +88,9 @@
 
     <div class="menu">
         {% if session.get("logueado") %}
-            <span>👤 {{ session.get("nombre") }}</span>
+            <span class="usuario-badge">
+                👤 {{ session.get("nombre") }}
+            </span>
             <a href="/visitas">📋 Visitas</a>
             <a href="/logout">🔒 Salir</a>
         {% else %}
