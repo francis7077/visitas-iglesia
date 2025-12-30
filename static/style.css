@@ -212,3 +212,33 @@ tr:hover {
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   }
 }
+
+/* ===== PERFIL ===== */
+.tarjeta-perfil {
+    background: #ffffff;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+}
+
+.perfil-fila {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 10px;
+    border-bottom: 1px solid #eee;
+    font-size: 15px;
+}
+
+.perfil-fila:last-child {
+    border-bottom: none;
+}
+
+.perfil-fila span {
+    color: #555;
+}
+
+.perfil-fila strong {
+    color: #222;
+}

@@ -1,21 +1,68 @@
 {% extends "base.html" %}
 {% block contenido %}
 
-<h2>Perfil de Visita</h2>
+<h2 class="titulo-principal">Perfil del Visitante</h2>
 
-<ul class="perfil">
-    <li><strong>Nombre:</strong> {{ p.nombre }}</li>
-    <li><strong>Fecha:</strong> {{ p.fecha }}</li>
-    <li><strong>Servicio:</strong> {{ p.servicio }}</li>
-    <li><strong>Dirección:</strong> {{ p.direccion }}</li>
-    <li><strong>Teléfono:</strong> {{ p.telefono }}</li>
-    <li><strong>Invitado por:</strong> {{ p.invitado_por }}</li>
-    <li><strong>Sexo:</strong> {{ p.sexo }}</li>
-    <li><strong>Rango de edad:</strong> {{ p.rango_edad }}</li>
-    <li><strong>Necesita visita:</strong> {{ p.visita_casa }}</li>
-    <li><strong>Visitado:</strong> {{ p.visitado }}</li>
-</ul>
+<div class="tarjeta-perfil">
 
-<a href="/visitas">← Volver</a>
+    <div class="perfil-fila">
+        <span>Nombre</span>
+        <strong>{{ p.nombre }}</strong>
+    </div>
+
+    <div class="perfil-fila">
+        <span>Fecha</span>
+        <strong>{{ p.fecha.strftime('%d/%m/%Y') }}</strong>
+    </div>
+
+    <div class="perfil-fila">
+        <span>Servicio</span>
+        <strong>{{ p.servicio }}</strong>
+    </div>
+
+    <div class="perfil-fila">
+        <span>Dirección</span>
+        <strong>{{ p.direccion }}</strong>
+    </div>
+
+    <div class="perfil-fila">
+        <span>Teléfono</span>
+        <strong>{{ p.telefono }}</strong>
+    </div>
+
+    <div class="perfil-fila">
+        <span>Invitado por</span>
+        <strong>{{ p.invitado_por }}</strong>
+    </div>
+
+    <div class="perfil-fila">
+        <span>Sexo</span>
+        <strong>{{ p.sexo }}</strong>
+    </div>
+
+    <div class="perfil-fila">
+        <span>Rango de edad</span>
+        <strong>{{ p.rango_edad }}</strong>
+    </div>
+
+    <div class="perfil-fila">
+        <span>¿Necesita visita?</span>
+        <strong>{{ p.visita_casa }}</strong>
+    </div>
+
+    <div class="perfil-fila">
+        <span>¿Fue visitado?</span>
+        <strong>
+            {% if p.visitado == 'Si' %}
+                🟢 Sí
+            {% else %}
+                🔴 No
+            {% endif %}
+        </strong>
+    </div>
+
+</div>
+
+<a href="/visitas" class="btn-volver">← Volver a visitas</a>
 
 {% endblock %}
