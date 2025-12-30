@@ -1,62 +1,106 @@
 {% extends "base.html" %}
 {% block contenido %}
 
-<h2>Editar Visita</h2>
+<h2 class="titulo-visitas">✏️ Editar Visita</h2>
 
-<form method="post">
+<form method="post" class="form-editar">
 
-    <label>Fecha</label>
-    <input type="date" name="fecha" value="{{ r.fecha }}" class="input-fecha">
+    <div class="grid-form">
 
-    <label>Servicio</label>
-    <select name="servicio" class="input-select-corto">
-        <option {{ 'selected' if r.servicio=='Servicio dominical' }}>Servicio dominical</option>
-        <option {{ 'selected' if r.servicio=='Servicio de jóvenes' }}>Servicio de jóvenes</option>
-        <option {{ 'selected' if r.servicio=='Servicio de damas' }}>Servicio de damas</option>
-        <option {{ 'selected' if r.servicio=='Servicio de caballeros' }}>Servicio de caballeros</option>
-        <option {{ 'selected' if r.servicio=='Retiro' }}>Retiro</option>
-        <option {{ 'selected' if r.servicio=='Otro' }}>Otro</option>
-    </select>
+        <div>
+            <label>📅 Fecha</label>
+            <input type="date" name="fecha" value="{{ r.fecha }}" class="input-fecha" required>
+        </div>
 
-    <label>Nombre</label>
-    <input name="nombre" value="{{ r.nombre }}" class="input-medio">
+        <div>
+            <label>⛪ Servicio</label>
+            <select name="servicio" class="input-select-corto">
+                <option {{ 'selected' if r.servicio=='Servicio dominical' }}>Servicio dominical</option>
+                <option {{ 'selected' if r.servicio=='Servicio de jóvenes' }}>Servicio de jóvenes</option>
+                <option {{ 'selected' if r.servicio=='Servicio de damas' }}>Servicio de damas</option>
+                <option {{ 'selected' if r.servicio=='Servicio de caballeros' }}>Servicio de caballeros</option>
+                <option {{ 'selected' if r.servicio=='Retiro' }}>Retiro</option>
+                <option {{ 'selected' if r.servicio=='Otro' }}>Otro</option>
+            </select>
+        </div>
 
-    <label>Dirección</label>
-    <input name="direccion" value="{{ r.direccion }}" class="input-largo">
+        <div>
+            <label>👤 Nombre</label>
+            <input name="nombre" value="{{ r.nombre }}" class="input-largo" required>
+        </div>
 
-    <label>Teléfono</label>
-    <input name="telefono" value="{{ r.telefono }}" class="input-telefono">
+        <div>
+            <label>📍 Dirección</label>
+            <input name="direccion" value="{{ r.direccion }}" class="input-largo">
+        </div>
 
-    <label>Invitado por</label>
-    <input name="invitado_por" value="{{ r.invitado_por }}" class="input-medio">
+        <div>
+            <label>📞 Teléfono</label>
+            <input name="telefono" value="{{ r.telefono }}" class="input-telefono">
+        </div>
 
-    <label>Sexo</label>
-    <select name="sexo" class="input-select-corto">
-        <option {{ 'selected' if r.sexo=='Masculino' }}>Masculino</option>
-        <option {{ 'selected' if r.sexo=='Femenino' }}>Femenino</option>
-    </select>
+        <div>
+            <label>🤝 Invitado por</label>
+            <input name="invitado_por" value="{{ r.invitado_por }}" class="input-medio">
+        </div>
 
-    <label>Rango de edad</label>
-    <select name="rango_edad" class="input-select-corto">
-        <option {{ 'selected' if r.rango_edad=='0–5 años' }}>0–5 años</option>
-        <option {{ 'selected' if r.rango_edad=='6–10 años' }}>6–10 años</option>
-        <option {{ 'selected' if r.rango_edad=='11–17 años' }}>11–17 años</option>
-        <option {{ 'selected' if r.rango_edad=='18–25 años' }}>18–25 años</option>
-        <option {{ 'selected' if r.rango_edad=='26–34 años' }}>26–34 años</option>
-        <option {{ 'selected' if r.rango_edad=='35–44 años' }}>35–44 años</option>
-        <option {{ 'selected' if r.rango_edad=='45–59 años' }}>45–59 años</option>
-        <option {{ 'selected' if r.rango_edad=='60 años o más' }}>60 años o más</option>
-    </select>
+        <div>
+            <label>🚻 Sexo</label>
+            <select name="sexo" class="input-select-corto">
+                <option {{ 'selected' if r.sexo=='Masculino' }}>Masculino</option>
+                <option {{ 'selected' if r.sexo=='Femenino' }}>Femenino</option>
+            </select>
+        </div>
 
-    <label>¿Necesita visita?</label>
-    <select name="visita_casa" class="input-select-corto">
-        <option {{ 'selected' if r.visita_casa=='Sí' }}>Sí</option>
-        <option {{ 'selected' if r.visita_casa=='No' }}>No</option>
-    </select>
+        <div>
+            <label>🎂 Rango de edad</label>
+            <select name="rango_edad" class="input-select-corto">
+                <option {{ 'selected' if r.rango_edad=='0–5 años' }}>0–5 años</option>
+                <option {{ 'selected' if r.rango_edad=='6–10 años' }}>6–10 años</option>
+                <option {{ 'selected' if r.rango_edad=='11–17 años' }}>11–17 años</option>
+                <option {{ 'selected' if r.rango_edad=='18–25 años' }}>18–25 años</option>
+                <option {{ 'selected' if r.rango_edad=='26–34 años' }}>26–34 años</option>
+                <option {{ 'selected' if r.rango_edad=='35–44 años' }}>35–44 años</option>
+                <option {{ 'selected' if r.rango_edad=='45–59 años' }}>45–59 años</option>
+                <option {{ 'selected' if r.rango_edad=='60 años o más' }}>60 años o más</option>
+            </select>
+        </div>
 
-    <button>Guardar cambios</button>
+        <div>
+            <label>🏠 ¿Necesita visita?</label>
+            <select name="visita_casa" class="input-select-corto">
+                <option {{ 'selected' if r.visita_casa=='Sí' }}>Sí</option>
+                <option {{ 'selected' if r.visita_casa=='No' }}>No</option>
+            </select>
+        </div>
+
+    </div>
+
+    <div class="barra-botones">
+        <button type="submit">💾 Guardar cambios</button>
+        <a href="/visitas" class="btn-secundario">← Cancelar</a>
+    </div>
+
 </form>
 
-<a href="/visitas">← Volver</a>
+<style>
+.grid-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+@media (max-width: 768px) {
+    .grid-form {
+        grid-template-columns: 1fr;
+    }
+}
+
+.barra-botones {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+</style>
 
 {% endblock %}
