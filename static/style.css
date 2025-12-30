@@ -21,7 +21,7 @@ a:hover {
 }
 
 /* ===== TITULOS ===== */
-h2 {
+h2, h1 {
   font-weight: bold;
   margin-bottom: 15px;
   color: #333;
@@ -33,7 +33,7 @@ form {
   padding: 25px 30px;
   border-radius: 10px;
   max-width: 900px;
-  margin: 0 auto;
+  margin: 0 auto 20px auto;
   box-shadow: 0 5px 15px rgba(0,0,0,0.05);
 }
 
@@ -58,9 +58,7 @@ input:focus, select:focus {
 }
 
 /* ===== TAMAÑOS DE INPUTS ===== */
-.input-fecha { 
-  width: 180px; /* barra de fecha más larga */
-}
+.input-fecha { width: 180px; }
 .input-select-corto { width: 200px; }
 .input-telefono { width: 180px; }
 .input-medio { width: 48%; }
@@ -68,75 +66,50 @@ input:focus, select:focus {
 
 /* ===== BOTONES ===== */
 button {
-  margin-top: 20px;
-  padding: 10px 20px;
+  margin-top: 10px;
+  padding: 10px 18px;
   background-color: #4a6cf7;
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
   box-shadow: 0 3px 6px rgba(0,0,0,0.1);
   transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
 }
 button:hover {
   background-color: #3a5ad9;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+  transform: translateY(-1px);
 }
 
-/* Botón secundario */
-.btn-secundario {
-  margin-left: 10px;
-  padding: 10px 20px;
-  background: #f0f2f5;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  color: #333;
-  transition: background-color 0.3s, transform 0.2s;
-}
-.btn-secundario:hover {
-  background: #e0e3e7;
-  transform: translateY(-2px);
-}
-
-/* Botón volver (flecha) más visible */
+/* ===== BOTÓN VOLVER ===== */
 .btn-volver {
   display: inline-flex;
   align-items: center;
   padding: 8px 12px;
   background-color: #4a6cf7;
   color: #fff;
-  border-radius: 8px;
+  border-radius: 10px;
   border: none;
   cursor: pointer;
   font-weight: bold;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-  transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
-}
-.btn-volver:hover {
-  background-color: #3a5ad9;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 10px rgba(0,0,0,0.15);
 }
 .btn-volver svg {
-  margin-right: 5px; /* espacio entre icono y texto */
-  width: 18px;
-  height: 18px;
+  margin-right: 5px;
 }
 
 /* ===== TABLAS ===== */
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  margin-top: 15px;
   background: #fff;
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 3px 6px rgba(0,0,0,0.05);
 }
 
 th, td {
-  padding: 12px 15px;
+  padding: 12px 10px;
   text-align: left;
   border-bottom: 1px solid #e0e0e0;
 }
@@ -150,47 +123,92 @@ tr:hover {
   background-color: #f9f9f9;
 }
 
-/* ===== AJUSTES ESPECÍFICOS PARA REGISTRO DE VISITAS ===== */
-/* Títulos centrados */
-.titulo-principal, .titulo-visitas {
-  text-align: center;
-  margin-bottom: 20px;
-  font-weight: bold;
-  font-size: 1.5em;
-  color: #333;
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
-  .input-medio {
-    width: 100%;
-  }
-  form {
-    padding: 20px;
-  }
-  button, .btn-secundario, .btn-volver {
-    width: 100%;
-    margin-left: 0;
-    margin-top: 15px;
-  }
-}
-/* Fila seleccionada */
+/* ===== FILA SELECCIONADA ===== */
 .fila-activa {
-    background-color: #e6f0ff;
+  background-color: #dce7ff !important;
+  border-left: 4px solid #4a6cf7;
 }
 
-/* Botones de acción */
+/* ===== FILTROS ===== */
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.filtros input,
+.filtros button {
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: 8px;
+}
+
+/* ===== ACCIONES (IMPRIMIR, EDITAR, ELIMINAR) ===== */
 .acciones {
-    margin: 10px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin: 10px 0 15px 0;
 }
 
 .acciones button {
-    padding: 6px 12px;
-    margin-right: 5px;
-    font-size: 14px;
+  padding: 6px 14px;
+  font-size: 13px;
+  border-radius: 20px;
+  background: #4a6cf7;
+  color: white;
+  border: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.acciones button:hover {
+  background: #3a5ad9;
 }
 
 .acciones button:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
+  background: #cfd6f5;
+  color: #777;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ===== RESPONSIVE (CELULAR) ===== */
+@media (max-width: 768px) {
+  body {
+    margin: 10px;
+  }
+
+  form {
+    padding: 15px;
+  }
+
+  input, select {
+    font-size: 13px;
+  }
+
+  table {
+    font-size: 13px;
+  }
+
+  th, td {
+    padding: 8px 6px;
+  }
+
+  .acciones {
+    position: sticky;
+    top: 0;
+    background: #f4f6f8;
+    padding: 8px 0;
+    z-index: 10;
+  }
+
+  .filtros {
+    background: #ffffff;
+    padding: 10px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
 }
