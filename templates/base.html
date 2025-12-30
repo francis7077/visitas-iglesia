@@ -2,23 +2,75 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Asistencia Iglesia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .topbar {
+            background: #4a6cf7;
+            color: white;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .topbar .logo {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .topbar .menu a {
+            color: white;
+            text-decoration: none;
+            margin-left: 12px;
+            font-size: 14px;
+            padding: 6px 10px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .topbar .menu a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .contenedor {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        @media (max-width: 768px) {
+            .topbar {
+                flex-direction: column;
+                gap: 8px;
+                text-align: center;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<nav>
-    {% if session.get("logueado") %}
-        <a href="/visitas">Visitas registradas</a> |
-        <a href="/logout">Cerrar sesión</a>
-    {% else %}
-        <a href="/">Registro</a> |
-        <a href="/login">Iniciar sesión</a>
-    {% endif %}
-</nav>
+<div class="topbar">
+    <div class="logo">
+        ⛪ Asistencia Iglesia
+    </div>
 
-<hr>
+    <div class="menu">
+        {% if session.get("logueado") %}
+            <span>👤 {{ session.get("nombre") }}</span>
+            <a href="/visitas">📋 Visitas</a>
+            <a href="/logout">🔒 Salir</a>
+        {% else %}
+            <a href="/">📝 Registro</a>
+            <a href="/login">🔐 Ingresar</a>
+        {% endif %}
+    </div>
+</div>
 
 <div class="contenedor">
     {% block contenido %}{% endblock %}
