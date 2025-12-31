@@ -7,22 +7,34 @@
 </script>
 {% endif %}
 
-<h1>Visitas Registradas</h1>
+<h1 class="titulo-visitas">📋 Visitas Registradas</h1>
 
-<form method="get" class="filtros">
-    Desde
-    <input type="date" name="desde" value="{{ desde }}">
-    Hasta
-    <input type="date" name="hasta" value="{{ hasta }}">
-    <button type="submit">Filtrar</button>
+<!-- 🔍 Barra de filtros compacta -->
+<form method="get" class="filtros filtros-card">
+    <div class="filtro-grupo">
+        <label>Desde</label>
+        <input type="date" name="desde" value="{{ desde }}">
+    </div>
+
+    <div class="filtro-grupo">
+        <label>Hasta</label>
+        <input type="date" name="hasta" value="{{ hasta }}">
+    </div>
+
+    <div class="filtro-grupo filtro-boton">
+        <button type="submit">🔍 Filtrar</button>
+    </div>
 </form>
 
-<div class="acciones">
+<!-- ⚙️ Acciones flotantes -->
+<div class="acciones acciones-fijas">
     <button id="btnImprimir" disabled>🖨️ Imprimir</button>
     <button id="btnEditar" disabled>✏️ Editar</button>
     <button id="btnEliminar" disabled>🗑️ Eliminar</button>
 </div>
 
+<!-- 📋 Tabla -->
+<div class="tabla-contenedor">
 <table id="tablaVisitas">
     <thead>
         <tr>
@@ -37,45 +49,53 @@
     <tbody>
     {% for r in visitas %}
         <tr data-id="{{ r['id'] }}" onclick="seleccionarFila(this)">
-            <td>{{ r['fecha'].strftime('%d/%m/%Y') }}</td>
 
-            <td>
+            <td class="col-fecha">
+                {{ r['fecha'].strftime('%d/%m/%Y') }}
+            </td>
+
+            <td class="col-nombre">
                 <a href="/perfil/{{ r['id'] }}" onclick="event.stopPropagation()">
                     <strong>{{ r['nombre'] }}</strong>
                 </a>
             </td>
 
-            <td>{{ r['invitado_por'] }}</td>
+            <td class="col-invitado">{{ r['invitado_por'] }}</td>
 
-            <td>
+            <td class="col-estado">
                 {% if r['visitado'] == 'Si' %}
-                    🟢 Sí
+                    <span class="badge ok">✔ Sí</span>
                 {% else %}
-                    🔴 No<br>
-                    <a href="/visitar/{{ r['id'] }}" onclick="event.stopPropagation()">Marcar visitado</a>
+                    <span class="badge no">No</span><br>
+                    <a href="/visitar/{{ r['id'] }}" class="link-pequeño" onclick="event.stopPropagation()">
+                        Marcar
+                    </a>
                 {% endif %}
             </td>
 
-            <td>
+            <td class="col-detalle">
                 {% if r['visitado'] == 'Si' %}
                     <a href="/visitar/{{ r['id'] }}" onclick="event.stopPropagation()">📄 Ver</a>
                 {% else %}
                     —
                 {% endif %}
             </td>
+
         </tr>
     {% else %}
         <tr>
-            <td colspan="5" style="text-align:center; padding:15px;">
-                No hay visitas registradas
+            <td colspan="5" class="vacio">
+                No hay visitas registradas en este período
             </td>
         </tr>
     {% endfor %}
     </tbody>
 </table>
+</div>
 
-<a href="/">← Volver al registro</a>
+<a href="/" class="btn-volver">← Volver al registro</a>
 
+<!-- 🧠 Lógica JS (sin cambios funcionales) -->
 <script>
 let idSeleccionado = null;
 
@@ -91,18 +111,21 @@ function seleccionarFila(fila) {
     document.getElementById("btnEliminar").disabled = false;
 }
 
+// Editar
 document.getElementById("btnEditar").onclick = function () {
     if (idSeleccionado) {
         window.location.href = "/editar/" + idSeleccionado;
     }
 };
 
+// Eliminar
 document.getElementById("btnEliminar").onclick = function () {
     if (idSeleccionado && confirm("¿Desea eliminar este registro?")) {
         window.location.href = "/eliminar/" + idSeleccionado;
     }
 };
 
+// Imprimir
 const desde = "{{ desde }}";
 const hasta = "{{ hasta }}";
 const btnImprimir = document.getElementById("btnImprimir");

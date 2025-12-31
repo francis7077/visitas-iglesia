@@ -1,19 +1,20 @@
 /* ===== RESET ===== */
 * {
   box-sizing: border-box;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
 }
 
 body {
   margin: 12px;
   background: #f4f6f8;
-  color: #333;
+  color: #2f3440;
 }
 
 /* ===== LINKS ===== */
 a {
   color: #4a6cf7;
   text-decoration: none;
+  font-weight: 500;
 }
 a:hover {
   text-decoration: underline;
@@ -22,74 +23,107 @@ a:hover {
 /* ===== TITULOS ===== */
 h1, h2 {
   text-align: center;
-  margin-bottom: 15px;
+  margin-bottom: 16px;
+  color: #1f2937;
 }
 
 /* ===== FORMULARIOS ===== */
 form {
   background: white;
-  padding: 18px;
-  border-radius: 14px;
+  padding: 20px;
+  border-radius: 16px;
   max-width: 900px;
-  margin: auto;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  margin: 0 auto 15px auto;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
 }
 
 label {
   display: block;
   margin-top: 12px;
-  font-weight: bold;
+  font-weight: 600;
+  color: #374151;
 }
 
 input, select {
   width: 100%;
-  padding: 10px;
+  padding: 10px 14px;
   margin-top: 6px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
   font-size: 14px;
+  background: #f9fafb;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #4a6cf7;
+  box-shadow: 0 0 0 3px rgba(74,108,247,.15);
+  background: #fff;
 }
 
 /* ===== BOTONES ===== */
 button {
-  padding: 10px 18px;
-  background: #4a6cf7;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #4a6cf7, #3a5ad9);
   color: white;
   border: none;
-  border-radius: 20px;
+  border-radius: 999px;
   cursor: pointer;
   font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(74,108,247,.35);
+  transition: all .2s ease;
 }
+
 button:hover {
-  background: #3a5ad9;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(74,108,247,.45);
 }
 
 /* ===== FILTROS ===== */
 .filtros {
+  max-width: 650px;
+  margin: 0 auto 18px auto;
+  background: white;
+  padding: 16px 20px;
+  border-radius: 18px;
   display: flex;
-  gap: 8px;
-  justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: 10px;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+}
+
+.filtros > * {
+  flex: 1;
+  min-width: 160px;
+}
+
+.filtros input {
+  background: #f7f9ff;
 }
 
 /* ===== ACCIONES ===== */
 .acciones {
   display: flex;
   justify-content: center;
-  gap: 8px;
-  margin: 10px 0;
+  gap: 10px;
+  margin: 14px 0;
+  flex-wrap: wrap;
 }
 
 .acciones button {
-  padding: 8px 16px;
-  border-radius: 20px;
+  padding: 8px 18px;
   font-size: 13px;
+  border-radius: 999px;
 }
 
 .acciones button:disabled {
-  background: #cfd6f5;
-  color: #777;
+  background: #d6dbf8;
+  color: #7a7a7a;
+  box-shadow: none;
   cursor: not-allowed;
 }
 
@@ -98,48 +132,55 @@ table {
   width: 100%;
   border-collapse: collapse;
   background: white;
-  border-radius: 14px;
+  border-radius: 18px;
   overflow: hidden;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
 }
 
 th, td {
-  padding: 10px;
-  border-bottom: 1px solid #eee;
-  font-size: 13px;
+  padding: 12px 10px;
+  border-bottom: 1px solid #edf0f5;
+  font-size: 14px;
 }
 
 th {
   background: #f1f4ff;
+  font-weight: 700;
+  color: #374151;
 }
 
 /* Hover */
 tr:hover {
-  background: #f5f8ff;
+  background: #f4f7ff;
   cursor: pointer;
 }
 
-/* Fila seleccionada */
+/* ===== FILA SELECCIONADA ===== */
 .fila-activa {
-  background: #dce7ff !important;
-  border-left: 4px solid #4a6cf7;
+  background: #e2ebff !important;
+  border-left: 5px solid #4a6cf7;
 }
 
 /* ===== PERFIL ===== */
 .tarjeta-perfil {
   background: white;
-  padding: 20px;
-  border-radius: 14px;
+  padding: 24px;
+  border-radius: 18px;
   max-width: 700px;
-  margin: auto;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+  margin: 20px auto;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.06);
 }
 
 .perfil-fila {
   display: flex;
   justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid #eee;
+  padding: 12px 0;
+  border-bottom: 1px solid #eef1f6;
+  font-size: 14px;
+}
+
+.perfil-fila:last-child {
+  border-bottom: none;
 }
 
 /* ===== RESPONSIVE ===== */
@@ -149,15 +190,20 @@ tr:hover {
   }
 
   th, td {
-    font-size: 12px;
+    font-size: 13px;
     padding: 8px;
   }
 
   .acciones {
     position: sticky;
-    top: 0;
+    bottom: 0;
     background: #f4f6f8;
-    padding: 8px;
+    padding: 10px;
     z-index: 10;
+    border-radius: 14px;
+  }
+
+  .filtros {
+    flex-direction: column;
   }
 }

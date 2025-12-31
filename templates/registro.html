@@ -1,61 +1,91 @@
 {% extends "base.html" %}
 {% block contenido %}
 
-<h2>Registro de Visitas a la Iglesia</h2>
+<h2 class="titulo-principal">📝 Registro de Visitas</h2>
 
-<form method="post">
-    <label>Fecha de asistencia</label>
-    <input type="date" name="fecha" class="input-fecha" required>
+<form method="post" class="form-card">
 
-    <label>Servicio</label>
-    <select name="servicio" class="input-select-corto">
-        <option>Servicio dominical</option>
-          <option>Servicio los viernes</option>
-        <option>Servicio de jóvenes</option>
-        <option>Servicio de damas</option>
-        <option>Servicio de caballeros</option>
-        <option>Retiro</option>
-        <option>Otro</option>
-    </select>
+    <!-- Fecha y Servicio -->
+    <div class="form-grid">
+        <div>
+            <label>📅 Fecha de asistencia</label>
+            <input type="date" name="fecha" required>
+        </div>
 
-    <label>Nombre</label>
-    <input name="nombre" class="input-medio" required>
+        <div>
+            <label>⛪ Servicio</label>
+            <select name="servicio">
+                <option>Servicio dominical</option>
+                <option>Servicio los viernes</option>
+                <option>Servicio de jóvenes</option>
+                <option>Servicio de damas</option>
+                <option>Servicio de caballeros</option>
+                <option>Escuela Bíblica</option>
+                <option>Retiro</option>
+                <option>Otro</option>
+            </select>
+        </div>
+    </div>
 
-    <label>Dirección</label>
-    <input name="direccion" class="input-largo">
+    <!-- Nombre -->
+    <label>👤 Nombre completo</label>
+    <input name="nombre" required>
 
-    <label>Teléfono</label>
-    <input name="telefono" class="input-telefono">
+    <!-- Dirección -->
+    <label>📍 Dirección</label>
+    <input name="direccion">
 
-    <label>Invitado por</label>
-    <input name="invitado_por" class="input-medio">
+    <!-- Teléfono e Invitado -->
+    <div class="form-grid">
+        <div>
+            <label>📞 Teléfono</label>
+            <input name="telefono">
+        </div>
 
-    <label>Sexo</label>
-    <select name="sexo" class="input-select-corto">
-        <option>Masculino</option>
-        <option>Femenino</option>
-    </select>
+        <div>
+            <label>🤝 Invitado por</label>
+            <input name="invitado_por">
+        </div>
+    </div>
 
-    <label>Rango de edad</label>
-    <select name="rango_edad" class="input-select-corto">
-        <option>0–5 años</option>
-        <option>6–10 años</option>
-        <option>11–17 años</option>
-        <option>18–25 años</option>
-        <option>26–34 años</option>
-        <option>35–44 años</option>
-        <option>45–59 años</option>
-        <option>60 años o más</option>
-    </select>
+    <!-- Sexo y Edad -->
+    <div class="form-grid">
+        <div>
+            <label>🚻 Sexo</label>
+            <select name="sexo">
+                <option>Masculino</option>
+                <option>Femenino</option>
+            </select>
+        </div>
 
-    <label>¿Necesita visita a su casa?</label>
-    <select name="visita_casa" class="input-select-corto">
+        <div>
+            <label>🎂 Rango de edad</label>
+            <select name="rango_edad">
+                <option>0–5 años</option>
+                <option>6–10 años</option>
+                <option>11–17 años</option>
+                <option>18–25 años</option>
+                <option>26–34 años</option>
+                <option>35–44 años</option>
+                <option>45–59 años</option>
+                <option>60 años o más</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Visita -->
+    <label>🏠 ¿Necesita visita a su casa?</label>
+    <select name="visita_casa">
         <option>Sí</option>
         <option>No</option>
     </select>
 
-    <button>Guardar</button>
-    <a href="/visitas" class="btn-secundario">Ver visitas</a>
+    <!-- Botones -->
+    <div class="form-botones">
+        <button type="submit">💾 Guardar visita</button>
+        <a href="/visitas" class="btn-secundario">📋 Ver visitas</a>
+    </div>
+
 </form>
 
 {% endblock %}
