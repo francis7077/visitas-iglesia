@@ -1,62 +1,68 @@
 {% extends "base.html" %}
 {% block contenido %}
 
-<h2>Registro de Visitas a la Iglesia</h2>
+<h2 class="titulo-principal">Perfil del Visitante</h2>
 
-<form method="post">
-    <label>Fecha de asistencia</label>
-    <input type="date" name="fecha" class="input-fecha" required>
+<div class="tarjeta-perfil">
 
-    <label>Servicio</label>
-    <select name="servicio" class="input-select-corto">
-        <option>Servicio dominical</option>
-        <option>Servicio los viernes</option>
-        <option>Servicio de jóvenes</option>
-        <option>Servicio de damas</option>
-        <option>Servicio de caballeros</option>
-        <option>Escuela Biblica</option>
-        <option>Retiro</option>
-        <option>Otro</option>
-    </select>
+    <div class="perfil-fila">
+        <span>Nombre</span>
+        <strong>{{ p.nombre }}</strong>
+    </div>
 
-    <label>Nombre</label>
-    <input name="nombre" class="input-medio" required>
+    <div class="perfil-fila">
+        <span>Fecha</span>
+        <strong>{{ p.fecha.strftime('%d/%m/%Y') }}</strong>
+    </div>
 
-    <label>Dirección</label>
-    <input name="direccion" class="input-largo">
+    <div class="perfil-fila">
+        <span>Servicio</span>
+        <strong>{{ p.servicio }}</strong>
+    </div>
 
-    <label>Teléfono</label>
-    <input name="telefono" class="input-telefono">
+    <div class="perfil-fila">
+        <span>Dirección</span>
+        <strong>{{ p.direccion }}</strong>
+    </div>
 
-    <label>Invitado por</label>
-    <input name="invitado_por" class="input-medio">
+    <div class="perfil-fila">
+        <span>Teléfono</span>
+        <strong>{{ p.telefono }}</strong>
+    </div>
 
-    <label>Sexo</label>
-    <select name="sexo" class="input-select-corto">
-        <option>Masculino</option>
-        <option>Femenino</option>
-    </select>
+    <div class="perfil-fila">
+        <span>Invitado por</span>
+        <strong>{{ p.invitado_por }}</strong>
+    </div>
 
-    <label>Rango de edad</label>
-    <select name="rango_edad" class="input-select-corto">
-        <option>0–5 años</option>
-        <option>6–10 años</option>
-        <option>11–17 años</option>
-        <option>18–25 años</option>
-        <option>26–34 años</option>
-        <option>35–44 años</option>
-        <option>45–59 años</option>
-        <option>60 años o más</option>
-    </select>
+    <div class="perfil-fila">
+        <span>Sexo</span>
+        <strong>{{ p.sexo }}</strong>
+    </div>
 
-    <label>¿Necesita visita a su casa?</label>
-    <select name="visita_casa" class="input-select-corto">
-        <option>Sí</option>
-        <option>No</option>
-    </select>
+    <div class="perfil-fila">
+        <span>Rango de edad</span>
+        <strong>{{ p.rango_edad }}</strong>
+    </div>
 
-    <button>Guardar</button>
-    <a href="/visitas" class="btn-secundario">Ver visitas</a>
-</form>
+    <div class="perfil-fila">
+        <span>¿Necesita visita?</span>
+        <strong>{{ p.visita_casa }}</strong>
+    </div>
+
+    <div class="perfil-fila">
+        <span>¿Fue visitado?</span>
+        <strong>
+            {% if p.visitado == 'Si' %}
+                🟢 Sí
+            {% else %}
+                🔴 No
+            {% endif %}
+        </strong>
+    </div>
+
+</div>
+
+<a href="/visitas" class="btn-volver">← Volver a visitas</a>
 
 {% endblock %}
