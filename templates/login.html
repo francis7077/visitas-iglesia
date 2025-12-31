@@ -1,31 +1,57 @@
 {% extends "base.html" %}
 {% block contenido %}
 
-<h2>🔐 Acceso a Visitas Registradas</h2>
-<p>Ingrese su usuario y contraseña para continuar</p>
+<div class="login-card">
 
-{% if error %}
-    <div style="color:#b00020; background:#ffe5e5; padding:10px; border-radius:5px; margin-bottom:10px;">
-        {{ error }}
+    <div class="login-header">
+        <div class="login-icon">⛪</div>
+        <h2>Acceso al Sistema</h2>
+        <p>Área privada de gestión de visitas</p>
     </div>
-{% endif %}
 
-<form method="post" class="form-login">
+    <!-- ⏱️ Mensaje si la sesión expiró -->
+    {% if session.get("expirada") %}
+        <div class="login-warning">
+            ⏱️ Tu sesión expiró por inactividad. Inicia sesión nuevamente.
+        </div>
+    {% endif %}
 
-    <label>Usuario</label>
-    <input type="text" name="usuario" placeholder="Pastor, Secretaria o Asistente" required autofocus>
+    {% if error %}
+        <div class="login-error">
+            ⚠ {{ error }}
+        </div>
+    {% endif %}
 
-    <label>Contraseña</label>
-    <input type="password" name="clave" placeholder="Ingrese su contraseña" required>
+    <form method="post" class="form-login">
 
-    <button type="submit">🔓 Iniciar sesión</button>
+        <label>Usuario</label>
+        <input 
+            type="text" 
+            name="usuario" 
+            placeholder="Pastor, Secretaria o Asistente" 
+            required 
+            autofocus
+        >
 
-</form>
+        <label>Contraseña</label>
+        <input 
+            type="password" 
+            name="clave" 
+            placeholder="Ingrese su contraseña" 
+            required
+        >
 
-<p style="margin-top:15px; font-size:14px; color:#555;">
-    Acceso autorizado solo para personal de la iglesia.
-</p>
+        <button type="submit" class="btn-login">
+            🔓 Iniciar sesión
+        </button>
 
-<a href="/" style="display:block; margin-top:20px;">← Volver al registro público</a>
+    </form>
+
+    <div class="login-footer">
+        <p>Acceso exclusivo para personal autorizado</p>
+        <a href="/">← Volver al registro público</a>
+    </div>
+
+</div>
 
 {% endblock %}

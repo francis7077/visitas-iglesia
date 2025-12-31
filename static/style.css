@@ -6,7 +6,7 @@
 
 body {
   margin: 12px;
-  background: #f4f6f8;
+  background: linear-gradient(180deg, #f4f6f8, #eef2f7);
   color: #2f3440;
 }
 
@@ -23,7 +23,7 @@ a:hover {
 /* ===== TITULOS ===== */
 h1, h2 {
   text-align: center;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
   color: #1f2937;
   font-weight: 700;
 }
@@ -31,11 +31,11 @@ h1, h2 {
 /* ===== FORMULARIOS ===== */
 form {
   background: white;
-  padding: 22px;
-  border-radius: 18px;
+  padding: 24px;
+  border-radius: 20px;
   max-width: 900px;
   margin: 0 auto 20px auto;
-  box-shadow: 0 10px 24px rgba(0,0,0,0.05);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.05);
 }
 
 label {
@@ -47,25 +47,25 @@ label {
 
 input, select {
   width: 100%;
-  padding: 11px 14px;
+  padding: 12px 16px;
   margin-top: 6px;
   border: 1px solid #d1d5db;
   border-radius: 14px;
   font-size: 14px;
   background: #f9fafb;
-  transition: border-color .2s, box-shadow .2s;
+  transition: all .2s ease;
 }
 
 input:focus, select:focus {
   outline: none;
   border-color: #4a6cf7;
-  box-shadow: 0 0 0 3px rgba(74,108,247,.15);
+  box-shadow: 0 0 0 4px rgba(74,108,247,.15);
   background: #fff;
 }
 
 /* ===== BOTONES ===== */
 button {
-  padding: 11px 24px;
+  padding: 12px 26px;
   background: linear-gradient(135deg, #4a6cf7, #3a5ad9);
   color: white;
   border: none;
@@ -73,44 +73,44 @@ button {
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
-  box-shadow: 0 6px 16px rgba(74,108,247,.4);
-  transition: all .2s ease;
+  box-shadow: 0 8px 18px rgba(74,108,247,.45);
+  transition: all .25s ease;
 }
 
 button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 22px rgba(74,108,247,.55);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(74,108,247,.55);
 }
 
 /* ===== FILTROS ===== */
 .filtros {
-  max-width: 620px;
-  margin: 0 auto 18px auto;
+  max-width: 680px;
+  margin: 0 auto 20px auto;
   background: white;
-  padding: 16px 20px;
-  border-radius: 18px;
+  padding: 18px 22px;
+  border-radius: 20px;
   display: grid;
   grid-template-columns: 1fr 1fr auto;
-  gap: 12px;
+  gap: 14px;
   align-items: center;
-  box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.06);
 }
 
 .filtros input {
-  background: #f7f9ff;
+  background: #f3f6ff;
 }
 
 /* ===== ACCIONES ===== */
 .acciones {
   display: flex;
   justify-content: center;
-  gap: 12px;
-  margin: 16px 0 20px 0;
+  gap: 14px;
+  margin: 18px 0 22px 0;
   flex-wrap: wrap;
 }
 
 .acciones button {
-  padding: 8px 20px;
+  padding: 10px 22px;
   font-size: 13px;
   border-radius: 999px;
 }
@@ -127,13 +127,13 @@ table {
   width: 100%;
   border-collapse: collapse;
   background: white;
-  border-radius: 18px;
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+  box-shadow: 0 10px 26px rgba(0,0,0,0.06);
 }
 
 th, td {
-  padding: 14px 12px;
+  padding: 16px 14px;
   border-bottom: 1px solid #edf0f5;
   font-size: 14px;
 }
@@ -153,38 +153,129 @@ tr:hover {
 /* ===== FILA SELECCIONADA ===== */
 .fila-activa {
   background: #e2ebff !important;
-  border-left: 5px solid #4a6cf7;
+  border-left: 6px solid #4a6cf7;
 }
 
 /* ===== PERFIL ===== */
 .tarjeta-perfil {
   background: white;
-  padding: 26px;
-  border-radius: 20px;
-  max-width: 720px;
-  margin: 24px auto;
-  box-shadow: 0 12px 28px rgba(0,0,0,0.06);
+  padding: 28px;
+  border-radius: 22px;
+  max-width: 740px;
+  margin: 26px auto;
+  box-shadow: 0 14px 34px rgba(0,0,0,0.07);
 }
 
-.perfil-fila {
+/* Header del perfil */
+.perfil-header {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  padding: 14px 0;
-  border-bottom: 1px solid #eef1f6;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.avatar {
+  background: linear-gradient(135deg, #4a6cf7, #3a5ad9);
+  color: white;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 26px;
+  box-shadow: 0 6px 18px rgba(74,108,247,.45);
+}
+
+.subtexto {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.estado .badge {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.badge.ok {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.badge.pendiente {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* Grid de datos */
+.perfil-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.dato {
+  background: #f9fbff;
+  padding: 14px 16px;
+  border-radius: 14px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+}
+
+.dato span {
+  display: block;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.dato strong {
+  font-size: 15px;
+  color: #1f2937;
+}
+
+/* Alerta */
+.alerta {
+  margin-top: 18px;
+  padding: 14px;
+  background: #fff7ed;
+  border-left: 5px solid #fb923c;
+  border-radius: 12px;
+  color: #9a3412;
   font-size: 14px;
 }
 
-.perfil-fila:last-child {
-  border-bottom: none;
+/* Botón regresar */
+.acciones-perfil {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.btn-regresar {
+  display: inline-block;
+  padding: 12px 28px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #4a6cf7, #3a5ad9);
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 8px 20px rgba(74,108,247,.45);
+  transition: .25s;
+}
+
+.btn-regresar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(74,108,247,.55);
 }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
-  body {
-    margin: 8px;
-  }
 
   .filtros {
+    grid-template-columns: 1fr;
+  }
+
+  .perfil-grid {
     grid-template-columns: 1fr;
   }
 
@@ -196,9 +287,12 @@ tr:hover {
   .acciones {
     position: sticky;
     bottom: 0;
-    background: #f4f6f8;
+    background: #eef2f7;
     padding: 12px;
     z-index: 10;
-    border-radius: 16px;
+    border-radius: 18px;
   }
+
 }
+
+

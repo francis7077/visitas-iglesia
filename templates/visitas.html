@@ -1,15 +1,16 @@
 {% extends "base.html" %}
 {% block contenido %}
 
-{% if not session.get("logueado") %}
-<script>
-    window.location.href = "/login";
-</script>
-{% endif %}
-
 <h1 class="titulo-visitas">📋 Visitas Registradas</h1>
 
-<!-- 🔍 Barra de filtros compacta -->
+<!-- 🔐 Mensaje si la sesión expiró -->
+{% if session.get("expirada") %}
+<div class="alerta alerta-roja">
+    ⏱️ Tu sesión expiró por inactividad. Inicia sesión nuevamente.
+</div>
+{% endif %}
+
+<!-- 🔍 Barra de filtros -->
 <form method="get" class="filtros filtros-card">
     <div class="filtro-grupo">
         <label>Desde</label>
@@ -26,7 +27,7 @@
     </div>
 </form>
 
-<!-- ⚙️ Acciones flotantes -->
+<!-- ⚙️ Acciones -->
 <div class="acciones acciones-fijas">
     <button id="btnImprimir" disabled>🖨️ Imprimir</button>
     <button id="btnEditar" disabled>✏️ Editar</button>
@@ -41,7 +42,7 @@
             <th>Fecha</th>
             <th>Nombre</th>
             <th>Invitado por</th>
-            <th>Visitado</th>
+            <th>Estado</th>
             <th>Detalle</th>
         </tr>
     </thead>
@@ -60,13 +61,13 @@
                 </a>
             </td>
 
-            <td class="col-invitado">{{ r['invitado_por'] }}</td>
+            <td class="col-invitado">{{ r['invitado_por'] or "—" }}</td>
 
             <td class="col-estado">
                 {% if r['visitado'] == 'Si' %}
-                    <span class="badge ok">✔ Sí</span>
+                    <span class="badge ok">✔ Visitado</span>
                 {% else %}
-                    <span class="badge no">No</span><br>
+                    <span class="badge no">⏳ Pendiente</span><br>
                     <a href="/visitar/{{ r['id'] }}" class="link-pequeño" onclick="event.stopPropagation()">
                         Marcar
                     </a>
@@ -95,7 +96,6 @@
 
 <a href="/" class="btn-volver">← Volver al registro</a>
 
-<!-- 🧠 Lógica JS (sin cambios funcionales) -->
 <script>
 let idSeleccionado = null;
 
