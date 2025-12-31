@@ -7,10 +7,13 @@ from functools import wraps
 from datetime import timedelta
 import time
 
+# 1️⃣ Crear la app primero
+app = Flask(__name__)
+
+# 2️⃣ Configurarla después
+app.secret_key = os.environ.get("SECRET_KEY", "clave_temporal")
 app.permanent_session_lifetime = timedelta(minutes=20)
 
-app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "clave_temporal")
 
 # ---------------- CONEXIÓN POSTGRES ----------------
 DATABASE_URL = os.environ.get("DATABASE_URL")
