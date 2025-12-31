@@ -25,31 +25,32 @@ h1, h2 {
   text-align: center;
   margin-bottom: 16px;
   color: #1f2937;
+  font-weight: 700;
 }
 
 /* ===== FORMULARIOS ===== */
 form {
   background: white;
-  padding: 20px;
-  border-radius: 16px;
+  padding: 22px;
+  border-radius: 18px;
   max-width: 900px;
-  margin: 0 auto 15px auto;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+  margin: 0 auto 20px auto;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.05);
 }
 
 label {
   display: block;
-  margin-top: 12px;
+  margin-top: 14px;
   font-weight: 600;
   color: #374151;
 }
 
 input, select {
   width: 100%;
-  padding: 10px 14px;
+  padding: 11px 14px;
   margin-top: 6px;
   border: 1px solid #d1d5db;
-  border-radius: 12px;
+  border-radius: 14px;
   font-size: 14px;
   background: #f9fafb;
   transition: border-color .2s, box-shadow .2s;
@@ -64,7 +65,7 @@ input:focus, select:focus {
 
 /* ===== BOTONES ===== */
 button {
-  padding: 10px 20px;
+  padding: 11px 24px;
   background: linear-gradient(135deg, #4a6cf7, #3a5ad9);
   color: white;
   border: none;
@@ -72,33 +73,27 @@ button {
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba(74,108,247,.35);
+  box-shadow: 0 6px 16px rgba(74,108,247,.4);
   transition: all .2s ease;
 }
 
 button:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(74,108,247,.45);
+  box-shadow: 0 8px 22px rgba(74,108,247,.55);
 }
 
 /* ===== FILTROS ===== */
 .filtros {
-  max-width: 650px;
+  max-width: 620px;
   margin: 0 auto 18px auto;
   background: white;
   padding: 16px 20px;
   border-radius: 18px;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
   gap: 12px;
   align-items: center;
-  justify-content: center;
   box-shadow: 0 8px 18px rgba(0,0,0,0.06);
-}
-
-.filtros > * {
-  flex: 1;
-  min-width: 160px;
 }
 
 .filtros input {
@@ -109,13 +104,13 @@ button:hover {
 .acciones {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  margin: 14px 0;
+  gap: 12px;
+  margin: 16px 0 20px 0;
   flex-wrap: wrap;
 }
 
 .acciones button {
-  padding: 8px 18px;
+  padding: 8px 20px;
   font-size: 13px;
   border-radius: 999px;
 }
@@ -134,11 +129,11 @@ table {
   background: white;
   border-radius: 18px;
   overflow: hidden;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.06);
 }
 
 th, td {
-  padding: 12px 10px;
+  padding: 14px 12px;
   border-bottom: 1px solid #edf0f5;
   font-size: 14px;
 }
@@ -164,17 +159,17 @@ tr:hover {
 /* ===== PERFIL ===== */
 .tarjeta-perfil {
   background: white;
-  padding: 24px;
-  border-radius: 18px;
-  max-width: 700px;
-  margin: 20px auto;
-  box-shadow: 0 10px 24px rgba(0,0,0,0.06);
+  padding: 26px;
+  border-radius: 20px;
+  max-width: 720px;
+  margin: 24px auto;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.06);
 }
 
 .perfil-fila {
   display: flex;
   justify-content: space-between;
-  padding: 12px 0;
+  padding: 14px 0;
   border-bottom: 1px solid #eef1f6;
   font-size: 14px;
 }
@@ -189,21 +184,21 @@ tr:hover {
     margin: 8px;
   }
 
+  .filtros {
+    grid-template-columns: 1fr;
+  }
+
   th, td {
     font-size: 13px;
-    padding: 8px;
+    padding: 10px;
   }
 
   .acciones {
     position: sticky;
     bottom: 0;
     background: #f4f6f8;
-    padding: 10px;
+    padding: 12px;
     z-index: 10;
-    border-radius: 14px;
-  }
-
-  .filtros {
-    flex-direction: column;
+    border-radius: 16px;
   }
 }

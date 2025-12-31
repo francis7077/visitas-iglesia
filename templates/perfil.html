@@ -3,66 +3,72 @@
 
 <h2 class="titulo-principal">Perfil del Visitante</h2>
 
-<div class="tarjeta-perfil">
+<div class="tarjeta-perfil perfil-premium">
 
-    <div class="perfil-fila">
-        <span>Nombre</span>
-        <strong>{{ p.nombre }}</strong>
-    </div>
+    <div class="perfil-header">
+        <div class="avatar">👤</div>
+        <div>
+            <h3>{{ p.nombre }}</h3>
+            <span class="subtexto">
+                {{ p.servicio }} · {{ p.fecha.strftime('%d/%m/%Y') }}
+            </span>
+        </div>
 
-    <div class="perfil-fila">
-        <span>Fecha</span>
-        <strong>{{ p.fecha.strftime('%d/%m/%Y') }}</strong>
-    </div>
-
-    <div class="perfil-fila">
-        <span>Servicio</span>
-        <strong>{{ p.servicio }}</strong>
-    </div>
-
-    <div class="perfil-fila">
-        <span>Dirección</span>
-        <strong>{{ p.direccion }}</strong>
-    </div>
-
-    <div class="perfil-fila">
-        <span>Teléfono</span>
-        <strong>{{ p.telefono }}</strong>
-    </div>
-
-    <div class="perfil-fila">
-        <span>Invitado por</span>
-        <strong>{{ p.invitado_por }}</strong>
-    </div>
-
-    <div class="perfil-fila">
-        <span>Sexo</span>
-        <strong>{{ p.sexo }}</strong>
-    </div>
-
-    <div class="perfil-fila">
-        <span>Rango de edad</span>
-        <strong>{{ p.rango_edad }}</strong>
-    </div>
-
-    <div class="perfil-fila">
-        <span>¿Necesita visita?</span>
-        <strong>{{ p.visita_casa }}</strong>
-    </div>
-
-    <div class="perfil-fila">
-        <span>¿Fue visitado?</span>
-        <strong>
+        <div class="estado">
             {% if p.visitado == 'Si' %}
-                🟢 Sí
+                <span class="badge ok">🟢 Visitado</span>
             {% else %}
-                🔴 No
+                <span class="badge pendiente">🔴 Pendiente</span>
             {% endif %}
-        </strong>
+        </div>
     </div>
+
+    <div class="perfil-grid">
+
+        <div class="dato">
+            <span>📍 Dirección</span>
+            <strong>{{ p.direccion or "—" }}</strong>
+        </div>
+
+        <div class="dato">
+            <span>📞 Teléfono</span>
+            <strong>{{ p.telefono or "—" }}</strong>
+        </div>
+
+        <div class="dato">
+            <span>🤝 Invitado por</span>
+            <strong>{{ p.invitado_por or "—" }}</strong>
+        </div>
+
+        <div class="dato">
+            <span>🚻 Sexo</span>
+            <strong>{{ p.sexo }}</strong>
+        </div>
+
+        <div class="dato">
+            <span>🎂 Rango de edad</span>
+            <strong>{{ p.rango_edad }}</strong>
+        </div>
+
+        <div class="dato">
+            <span>🏠 ¿Necesita visita?</span>
+            <strong>{{ p.visita_casa }}</strong>
+        </div>
+
+    </div>
+
+    {% if p.visitado != 'Si' %}
+        <div class="alerta">
+            ⚠️ Este visitante aún no ha sido visitado.
+        </div>
+    {% endif %}
 
 </div>
 
-<a href="/visitas" class="btn-volver">← Volver a visitas</a>
+<div class="acciones-perfil">
+    <a href="/visitas" class="btn-regresar">
+        ⬅ Volver a Visitas
+    </a>
+</div>
 
 {% endblock %}
