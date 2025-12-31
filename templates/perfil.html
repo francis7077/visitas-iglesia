@@ -5,9 +5,13 @@
 
 <div class="tarjeta-perfil perfil-premium">
 
+    <!-- Encabezado -->
     <div class="perfil-header">
-        <div class="avatar">👤</div>
-        <div>
+        <div class="avatar">
+            👤
+        </div>
+
+        <div class="info-principal">
             <h3>{{ p.nombre }}</h3>
             <span class="subtexto">
                 {{ p.servicio }} · {{ p.fecha.strftime('%d/%m/%Y') }}
@@ -23,6 +27,7 @@
         </div>
     </div>
 
+    <!-- Información -->
     <div class="perfil-grid">
 
         <div class="dato">
@@ -59,7 +64,7 @@
 
     {% if p.visitado != 'Si' %}
         <div class="alerta">
-            ⚠️ Este visitante aún no ha sido visitado.
+            ⚠️ Este visitante aún no ha sido visitado. Se recomienda seguimiento.
         </div>
     {% endif %}
 
