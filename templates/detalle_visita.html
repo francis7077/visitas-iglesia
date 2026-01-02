@@ -1,20 +1,52 @@
 {% extends "base.html" %}
 {% block contenido %}
 
-<h2>Detalle de Visita</h2>
+<h2>📝 Historial de Visitas</h2>
 
-{% if detalle %}
-    <p><strong>Visitado por:</strong> {{ detalle.visitado_por }}</p>
-    <p><strong>Fecha de visita:</strong> {{ detalle.fecha_visita }}</p>
-    <p><strong>Nota:</strong> {{ detalle.nota or '—' }}</p>
+<div class="tarjeta-perfil">
 
-    <a href="/visitas">← Volver</a>
+    <h3>Visitas realizadas</h3>
 
-{% else %}
-<form method="post" class="form-visita">
+    {% if visitas %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Visitado por</th>
+                    <th>Nota</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for v in visitas %}
+                <tr>
+                    <td>{{ v.fecha_visita.strftime('%d/%m/%Y') }}</td>
+                    <td>{{ v.visitado_por }}</td>
+                    <td>{{ v.nota or "—" }}</td>
+                    <td>
+                        <a href="/editar_visita/{{ v.id }}">✏️</a>
+                        <a href="/eliminar_visita/{{ v.id }}" onclick="return confirm('¿Eliminar esta visita?')">🗑️</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Este visitante aún no tiene visitas registradas.</p>
+    {% endif %}
+
+</div>
+
+<br>
+
+<div class="tarjeta-perfil">
+
+<h3>➕ Registrar nueva visita</h3>
+
+<form method="post">
+
     <label>Visitado por</label>
     <select name="visitado_por" required>
-        <option value="">Seleccione</option>
         <option>Sociedad de Jóvenes</option>
         <option>Sociedad de Damas</option>
         <option>Sociedad de Caballeros</option>
@@ -26,13 +58,15 @@
     <label>Fecha de la visita</label>
     <input type="date" name="fecha_visita" required>
 
-    <label>Nota (opcional)</label>
-    <textarea name="nota" rows="3"></textarea>
+    <label>Nota</label>
+    <textarea name="nota"></textarea>
 
-    <button>Guardar</button>
+    <button>Guardar visita</button>
+
 </form>
 
-<a href="/visitas">← Volver</a>
-{% endif %}
+</div>
+
+<a href="/visitas" class="btn-volver">← Volver a visitas</a>
 
 {% endblock %}

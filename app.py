@@ -63,11 +63,11 @@ def crear_tablas():
     # Detalle visita
     c.execute("""
     CREATE TABLE IF NOT EXISTS detalle_visita (
-        id SERIAL PRIMARY KEY,
-        visita_id INTEGER UNIQUE REFERENCES visitas(id) ON DELETE CASCADE,
-        visitado_por TEXT,
-        fecha_visita DATE,
-        nota TEXT
+    id SERIAL PRIMARY KEY,
+    visita_id INTEGER REFERENCES visitas(id) ON DELETE CASCADE,
+    visitado_por TEXT,
+    fecha_visita DATE,
+    nota TEXT
     )
     """)
 
