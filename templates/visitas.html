@@ -27,23 +27,6 @@
     </div>
 </form>
 
-<!-- 📊 Indicadores rápidos -->
-{% if visitas %}
-<div class="resumen-visitas">
-    <span>👥 Total: <strong>{{ visitas|length }}</strong></span>
-    <span>🟢 Visitados: 
-        <strong>
-        {{ visitas | selectattr("visitado","equalto","Si") | list | length }}
-        </strong>
-    </span>
-    <span>⏳ Pendientes: 
-        <strong>
-        {{ visitas | selectattr("visitado","equalto","No") | list | length }}
-        </strong>
-    </span>
-</div>
-{% endif %}
-
 <!-- ⚙️ Acciones -->
 <div class="acciones acciones-fijas">
     <button id="btnImprimir" disabled>🖨️ Imprimir</button>
@@ -66,7 +49,7 @@
 
     <tbody>
     {% for r in visitas %}
-        <tr data-id="{{ r['id'] }}" onclick="seleccionarFila(this)" tabindex="0">
+        <tr data-id="{{ r['id'] }}" onclick="seleccionarFila(this)">
 
             <td class="col-fecha">
                 {{ r['fecha'].strftime('%d/%m/%Y') }}
@@ -127,13 +110,6 @@ function seleccionarFila(fila) {
     document.getElementById("btnEditar").disabled = false;
     document.getElementById("btnEliminar").disabled = false;
 }
-
-// Permitir seleccionar con Enter (accesibilidad)
-document.querySelectorAll("#tablaVisitas tbody tr").forEach(row => {
-    row.addEventListener("keydown", e => {
-        if (e.key === "Enter") seleccionarFila(row);
-    });
-});
 
 // Editar
 document.getElementById("btnEditar").onclick = function () {

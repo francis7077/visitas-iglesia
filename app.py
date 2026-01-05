@@ -262,26 +262,32 @@ def visitar(id):
     conn = conectar()
     c = conn.cursor()
 
-    c.execute("SELECT * FROM detalle_visita WHERE visita_id=%s", (id,))
-    detalle = c.fetchone()
-
-    if request.method == "POST" and detalle is None:
+    # Si viene POST, SIEMPRE crear una nueva visita
+    if request.method == "POST":
         c.execute("""
-        INSERT INTO detalle_visita
-        (visita_id, visitado_por, fecha_visita, nota)
-        VALUES (%s,%s,%s,%s)
+            INSERT INTO detalle_visita
+            (visita_id, visitado_por, fecha_visita, nota)
+            VALUES (%s, %s, %s, %s)
         """, (
             id,
             request.form["visitado_por"],
             request.form["fecha_visita"],
             request.form.get("nota", "")
         ))
-
-        c.execute("UPDATE visitas SET visitado='Si' WHERE id=%s", (id,))
         conn.commit()
 
+    # Cargar TODAS las visitas de esa persona
+    c.execute("""
+        SELECT *
+        FROM detalle_visita
+        WHERE visita_id = %s
+        ORDER BY fecha_visita DESC
+    """, (id,))
+    detalles = c.fetchall()
+
     conn.close()
-    return render_template("detalle_visita.html", detalle=detalle, id=id)
+
+    return render_template("detalle_visita.html", visitas=detalles, id=id)
 
 # ---------- IMPRIMIR ----------
 @app.route("/imprimir")

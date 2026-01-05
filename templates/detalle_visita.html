@@ -1,11 +1,16 @@
 {% extends "base.html" %}
 {% block contenido %}
 
-<h2>📝 Historial de Visitas</h2>
+<h2 class="titulo-principal">📖 Historial de Visitas</h2>
 
 <div class="tarjeta-perfil">
 
-    <h3>Visitas realizadas</h3>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3>Visitas realizadas</h3>
+        <span class="badge ok">
+            {{ visitas|length }} registradas
+        </span>
+    </div>
 
     {% if visitas %}
         <table>
@@ -14,25 +19,32 @@
                     <th>Fecha</th>
                     <th>Visitado por</th>
                     <th>Nota</th>
-                    <th>Acciones</th>
+                    <th style="text-align:center">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 {% for v in visitas %}
-                <tr>
+                <tr {% if loop.first %} style="background:#eef4ff;font-weight:600;" {% endif %}>
                     <td>{{ v.fecha_visita.strftime('%d/%m/%Y') }}</td>
                     <td>{{ v.visitado_por }}</td>
                     <td>{{ v.nota or "—" }}</td>
-                    <td>
-                        <a href="/editar_visita/{{ v.id }}">✏️</a>
-                        <a href="/eliminar_visita/{{ v.id }}" onclick="return confirm('¿Eliminar esta visita?')">🗑️</a>
+                    <td style="text-align:center">
+                        <a href="/editar_visita/{{ v.id }}" title="Editar">✏️</a>
+                        &nbsp;
+                        <a href="/eliminar_visita/{{ v.id }}" 
+                           onclick="return confirm('¿Eliminar esta visita?')" 
+                           title="Eliminar">
+                           🗑️
+                        </a>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     {% else %}
-        <p>Este visitante aún no tiene visitas registradas.</p>
+        <div class="alerta">
+            Este visitante aún no ha sido visitado.
+        </div>
     {% endif %}
 
 </div>
@@ -41,32 +53,39 @@
 
 <div class="tarjeta-perfil">
 
-<h3>➕ Registrar nueva visita</h3>
+    <h3>➕ Registrar nueva visita</h3>
 
-<form method="post">
+    <form method="post">
 
-    <label>Visitado por</label>
-    <select name="visitado_por" required>
-        <option>Sociedad de Jóvenes</option>
-        <option>Sociedad de Damas</option>
-        <option>Sociedad de Caballeros</option>
-        <option>Directiva Local</option>
-        <option>Familia Pastoral</option>
-        <option>Visita Mixta</option>
-    </select>
+        <label>Visitado por</label>
+        <select name="visitado_por" required>
+            <option value="">Seleccione</option>
+            <option>Sociedad de Jóvenes</option>
+            <option>Sociedad de Damas</option>
+            <option>Sociedad de Caballeros</option>
+            <option>Directiva Local</option>
+            <option>Familia Pastoral</option>
+            <option>Visita Mixta</option>
+        </select>
 
-    <label>Fecha de la visita</label>
-    <input type="date" name="fecha_visita" required>
+        <label>Fecha de la visita</label>
+        <input type="date" name="fecha_visita" required>
 
-    <label>Nota</label>
-    <textarea name="nota"></textarea>
+        <label>Nota</label>
+        <textarea name="nota" placeholder="Observaciones de la visita..."></textarea>
 
-    <button>Guardar visita</button>
+        <button>
+            💾 Guardar visita
+        </button>
 
-</form>
+    </form>
 
 </div>
 
-<a href="/visitas" class="btn-volver">← Volver a visitas</a>
+<div style="text-align:center; margin-top:20px;">
+    <a href="/visitas" class="btn-volver">
+        ⬅ Volver a visitas
+    </a>
+</div>
 
 {% endblock %}
