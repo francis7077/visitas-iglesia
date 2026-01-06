@@ -176,26 +176,56 @@ def visitas():
     desde = request.args.get("desde")
     hasta = request.args.get("hasta")
 
-    query = "SELECT * FROM visitas WHERE 1=1"
+    query = """
+        SELECT 
+            v.*,
+            COUNT(d.id) AS total_visitas
+        FROM visitas v
+        LEFT JOIN detalle_visita d ON v.id = d.visita_id
+        WHERE 1=1
+    """
     params = []
 
     if desde:
-        query += " AND fecha >= %s"
+        query += " AND v.fecha >= %s"
         params.append(desde)
 
     if hasta:
-        query += " AND fecha <= %s"
+        query += " AND v.fecha <= %s"
         params.append(hasta)
 
-    query += " ORDER BY fecha DESC"
+    query += """
+        GROUP BY v.id
+        ORDER BY v.fecha DESC
+    """
 
     conn = conectar()
     c = conn.cursor()
     c.execute(query, params)
     visitas = c.fetchall()
+
+    # Contadores de dashboard
+    c.execute("SELECT COUNT(*) FROM visitas")
+    total = c.fetchone()[0]
+
+    c.execute("SELECT COUNT(*) FROM visitas WHERE visitado='Si'")
+    visitados = c.fetchone()[0]
+
+    c.execute("SELECT COUNT(*) FROM visitas WHERE visitado='No'")
+    pendientes = c.fetchone()[0]
+
     conn.close()
 
-    return render_template("visitas.html", visitas=visitas, desde=desde, hasta=hasta)
+    return render_template(
+        "visitas.html",
+        visitas=visitas,
+        desde=desde,
+        hasta=hasta,
+        total=total,
+        visitados=visitados,
+        pendientes=pendientes
+    )
+
 
 # ---------- PERFIL ----------
 @app.route("/perfil/<int:id>")
@@ -203,11 +233,24 @@ def visitas():
 def perfil(id):
     conn = conectar()
     c = conn.cursor()
+
     c.execute("SELECT * FROM visitas WHERE id=%s", (id,))
     p = c.fetchone()
+
+    # Última visita
+    c.execute("""
+        SELECT fecha_visita, visitado_por
+        FROM detalle_visita
+        WHERE visita_id = %s
+        ORDER BY fecha_visita DESC
+        LIMIT 1
+    """, (id,))
+    ultima = c.fetchone()
+
     conn.close()
 
-    return render_template("perfil.html", p=p)
+    return render_template("perfil.html", p=p, ultima=ultima)
+
 
 # ---------- EDITAR ----------
 @app.route("/editar/<int:id>", methods=["GET", "POST"])
@@ -218,10 +261,10 @@ def editar(id):
 
     if request.method == "POST":
         c.execute("""
-        UPDATE visitas SET
-            fecha=%s, servicio=%s, nombre=%s, direccion=%s, telefono=%s,
-            invitado_por=%s, sexo=%s, rango_edad=%s, visita_casa=%s
-        WHERE id=%s
+            UPDATE visitas SET
+                fecha=%s, servicio=%s, nombre=%s, direccion=%s, telefono=%s,
+                invitado_por=%s, sexo=%s, rango_edad=%s, visita_casa=%s
+            WHERE id=%s
         """, (
             request.form["fecha"],
             request.form["servicio"],
@@ -244,18 +287,23 @@ def editar(id):
 
     return render_template("editar.html", r=r)
 
+
 # ---------- ELIMINAR ----------
 @app.route("/eliminar/<int:id>")
 @requiere_login
 def eliminar(id):
     conn = conectar()
     c = conn.cursor()
+
+    # Eliminar también sus visitas
+    c.execute("DELETE FROM detalle_visita WHERE visita_id=%s", (id,))
     c.execute("DELETE FROM visitas WHERE id=%s", (id,))
+
     conn.commit()
     conn.close()
     return redirect("/visitas")
 
-# ---------- VISITAR ----------
+
 # ---------- VISITAR ----------
 @app.route("/visitar/<int:id>", methods=["GET", "POST"])
 @requiere_login
@@ -263,7 +311,7 @@ def visitar(id):
     conn = conectar()
     c = conn.cursor()
 
-    # Si viene POST, SIEMPRE crear una nueva visita
+    # Si viene POST, SIEMPRE crear nueva visita
     if request.method == "POST":
         c.execute("""
             INSERT INTO detalle_visita
@@ -276,24 +324,20 @@ def visitar(id):
             request.form.get("nota", "")
         ))
 
-        # 🔥 Marcar como visitado
+        # Marcar como visitado
         c.execute("""
-            UPDATE visitas 
-            SET visitado = 'Si'
-            WHERE id = %s
+            UPDATE visitas
+            SET visitado='Si'
+            WHERE id=%s
         """, (id,))
 
         conn.commit()
 
-    # 📅 Cargar TODAS las visitas formateando la fecha correctamente
+    # Cargar historial de visitas
     c.execute("""
-        SELECT 
-            id,
-            visitado_por,
-            DATE_FORMAT(fecha_visita, '%%d/%%m/%%Y') AS fecha_visita,
-            nota
+        SELECT id, visitado_por, fecha_visita, nota
         FROM detalle_visita
-        WHERE visita_id = %s
+        WHERE visita_id=%s
         ORDER BY fecha_visita DESC
     """, (id,))
     detalles = c.fetchall()
@@ -301,6 +345,7 @@ def visitar(id):
     conn.close()
 
     return render_template("detalle_visita.html", visitas=detalles, id=id)
+
 
 # ---------- IMPRIMIR ----------
 @app.route("/imprimir")
@@ -317,6 +362,7 @@ def imprimir():
         WHERE fecha BETWEEN %s AND %s
         ORDER BY fecha
     """, (desde, hasta))
+
     visitas = c.fetchall()
     conn.close()
 
