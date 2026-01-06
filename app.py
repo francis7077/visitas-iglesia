@@ -256,6 +256,7 @@ def eliminar(id):
     return redirect("/visitas")
 
 # ---------- VISITAR ----------
+# ---------- VISITAR ----------
 @app.route("/visitar/<int:id>", methods=["GET", "POST"])
 @requiere_login
 def visitar(id):
@@ -275,7 +276,7 @@ def visitar(id):
             request.form.get("nota", "")
         ))
 
-        # 🔥 MARCAR COMO VISITADO
+        # 🔥 Marcar como visitado
         c.execute("""
             UPDATE visitas 
             SET visitado = 'Si'
@@ -284,9 +285,13 @@ def visitar(id):
 
         conn.commit()
 
-    # Cargar TODAS las visitas de esa persona
+    # 📅 Cargar TODAS las visitas formateando la fecha correctamente
     c.execute("""
-        SELECT *
+        SELECT 
+            id,
+            visitado_por,
+            DATE_FORMAT(fecha_visita, '%%d/%%m/%%Y') AS fecha_visita,
+            nota
         FROM detalle_visita
         WHERE visita_id = %s
         ORDER BY fecha_visita DESC
