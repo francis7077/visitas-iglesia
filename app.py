@@ -274,6 +274,14 @@ def visitar(id):
             request.form["fecha_visita"],
             request.form.get("nota", "")
         ))
+
+        # 🔥 MARCAR COMO VISITADO
+        c.execute("""
+            UPDATE visitas 
+            SET visitado = 'Si'
+            WHERE id = %s
+        """, (id,))
+
         conn.commit()
 
     # Cargar TODAS las visitas de esa persona
