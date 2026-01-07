@@ -305,27 +305,35 @@ def visitar(id):
     c = conn.cursor()
 
     if request.method == "POST":
-        c.execute("""
-            INSERT INTO detalle_visita
-            (visita_id, visitado_por, fecha_visita, nota)
-            VALUES (%s, %s, %s, %s)
-        """, (
-            id,
-            request.form["visitado_por"],
-            request.form["fecha_visita"],
-            request.form.get("nota", "")
-        ))
 
-        # 🔥 Marcar como visitado si ya tiene al menos una visita
-        c.execute("""
-            UPDATE visitas
-            SET visitado='Si'
-            WHERE id=%s
-        """, (id,))
+        # 🛡️ Protección: no permitir guardar si faltan datos
+        visitado_por = request.form.get("visitado_por")
+        fecha_visita = request.form.get("fecha_visita")
+        nota = request.form.get("nota", "")
 
-        conn.commit()
+        if visitado_por and fecha_visita:
 
-    # Historial completo
+            c.execute("""
+                INSERT INTO detalle_visita
+                (visita_id, visitado_por, fecha_visita, nota)
+                VALUES (%s, %s, %s, %s)
+            """, (
+                id,
+                visitado_por,
+                fecha_visita,
+                nota
+            ))
+
+            # 🔥 Marcar como visitado
+            c.execute("""
+                UPDATE visitas
+                SET visitado='Si'
+                WHERE id=%s
+            """, (id,))
+
+            conn.commit()
+
+    # 📊 Historial completo
     c.execute("""
         SELECT id, visitado_por, fecha_visita, nota
         FROM detalle_visita
@@ -334,10 +342,26 @@ def visitar(id):
     """, (id,))
     detalles = c.fetchall()
 
+    # 📈 Total de visitas
+    c.execute("""
+        SELECT COUNT(*) AS total
+        FROM detalle_visita
+        WHERE visita_id=%s
+    """, (id,))
+    total_visitas = c.fetchone()["total"]
+
+    # 📅 Última visita (si existe)
+    ultima_visita = detalles[0] if detalles else None
+
     conn.close()
 
-    return render_template("detalle_visita.html", visitas=detalles, id=id)
-
+    return render_template(
+        "detalle_visita.html",
+        visitas=detalles,
+        id=id,
+        total_visitas=total_visitas,
+        ultima_visita=ultima_visita
+    )
 
 # ---------- IMPRIMIR ----------
 @app.route("/imprimir")
