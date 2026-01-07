@@ -161,7 +161,6 @@ def registro():
         return redirect("/")
 
     return render_template("registro.html")
-
 # ---------- VER VISITAS ----------
 @app.route("/visitas")
 @requiere_login
@@ -197,15 +196,15 @@ def visitas():
     c.execute(query, params)
     visitas = c.fetchall()
 
-    # Estadísticas
-    c.execute("SELECT COUNT(*) FROM visitas")
-    total = c.fetchone()["count"]
+    # 📊 Estadísticas seguras
+    c.execute("SELECT COUNT(*) AS total FROM visitas")
+    total = c.fetchone()["total"]
 
-    c.execute("SELECT COUNT(*) FROM visitas WHERE visitado='Si'")
-    visitados = c.fetchone()["count"]
+    c.execute("SELECT COUNT(*) AS total FROM visitas WHERE visitado='Si'")
+    visitados = c.fetchone()["total"]
 
-    c.execute("SELECT COUNT(*) FROM visitas WHERE visitado='No'")
-    pendientes = c.fetchone()["count"]
+    c.execute("SELECT COUNT(*) AS total FROM visitas WHERE visitado='No'")
+    pendientes = c.fetchone()["total"]
 
     conn.close()
 
@@ -305,14 +304,12 @@ def visitar(id):
     c = conn.cursor()
 
     if request.method == "POST":
-
-        # 🛡️ Protección: no permitir guardar si faltan datos
         visitado_por = request.form.get("visitado_por")
         fecha_visita = request.form.get("fecha_visita")
         nota = request.form.get("nota", "")
 
+        # 🛡️ Validación fuerte
         if visitado_por and fecha_visita:
-
             c.execute("""
                 INSERT INTO detalle_visita
                 (visita_id, visitado_por, fecha_visita, nota)
@@ -333,7 +330,7 @@ def visitar(id):
 
             conn.commit()
 
-    # 📊 Historial completo
+    # 📜 Historial completo
     c.execute("""
         SELECT id, visitado_por, fecha_visita, nota
         FROM detalle_visita
@@ -342,7 +339,7 @@ def visitar(id):
     """, (id,))
     detalles = c.fetchall()
 
-    # 📈 Total de visitas
+    # 📊 Total de visitas
     c.execute("""
         SELECT COUNT(*) AS total
         FROM detalle_visita
@@ -350,7 +347,7 @@ def visitar(id):
     """, (id,))
     total_visitas = c.fetchone()["total"]
 
-    # 📅 Última visita (si existe)
+    # 🕒 Última visita
     ultima_visita = detalles[0] if detalles else None
 
     conn.close()
@@ -362,6 +359,7 @@ def visitar(id):
         total_visitas=total_visitas,
         ultima_visita=ultima_visita
     )
+
 
 # ---------- IMPRIMIR ----------
 @app.route("/imprimir")

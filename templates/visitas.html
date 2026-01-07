@@ -10,6 +10,22 @@
 </div>
 {% endif %}
 
+<!-- 📊 Dashboard rápido -->
+<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px;">
+    <div class="tarjeta-perfil" style="text-align:center;">
+        <div style="font-size:22px; font-weight:bold;">{{ total }}</div>
+        <div style="font-size:13px; color:#555;">Total registrados</div>
+    </div>
+    <div class="tarjeta-perfil" style="text-align:center; border-left:5px solid #22c55e;">
+        <div style="font-size:22px; font-weight:bold; color:#16a34a;">{{ visitados }}</div>
+        <div style="font-size:13px; color:#555;">Visitados</div>
+    </div>
+    <div class="tarjeta-perfil" style="text-align:center; border-left:5px solid #f59e0b;">
+        <div style="font-size:22px; font-weight:bold; color:#d97706;">{{ pendientes }}</div>
+        <div style="font-size:13px; color:#555;">Pendientes</div>
+    </div>
+</div>
+
 <!-- 🔍 Barra de filtros -->
 <form method="get" class="filtros filtros-card">
     <div class="filtro-grupo">
