@@ -1,19 +1,17 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, g
 import os
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
-from datetime import timedelta
-import time
+from datetime import timedelta, datetime
 
-# 1️⃣ Crear la app primero
+# 1️⃣ Crear app
 app = Flask(__name__)
 
-# 2️⃣ Configurarla después
-app.secret_key = os.environ.get("SECRET_KEY", "clave_temporal")
+# 2️⃣ Configuración segura
+app.secret_key = os.environ.get("SECRET_KEY", "iglesia_super_segura_2025")
 app.permanent_session_lifetime = timedelta(minutes=20)
-
 
 # ---------------- CONEXIÓN POSTGRES ----------------
 DATABASE_URL = os.environ.get("DATABASE_URL")
@@ -21,12 +19,13 @@ DATABASE_URL = os.environ.get("DATABASE_URL")
 def conectar():
     return psycopg2.connect(DATABASE_URL, cursor_factory=RealDictCursor)
 
-# ---------------- CONTEXTO GLOBAL (USUARIO EN PLANTILLAS) ----------------
+# ---------------- CONTEXTO GLOBAL ----------------
 @app.context_processor
 def datos_usuario():
     return {
         "usuario_logueado": session.get("nombre"),
-        "rol": session.get("usuario")
+        "rol": session.get("usuario"),
+        "ahora": datetime.now()
     }
 
 # ---------------- SEGURIDAD ----------------
@@ -34,6 +33,7 @@ def requiere_login(f):
     @wraps(f)
     def decorador(*args, **kwargs):
         if not session.get("logueado"):
+            session["expirada"] = True
             return redirect("/login")
         return f(*args, **kwargs)
     return decorador
@@ -43,11 +43,10 @@ def crear_tablas():
     conn = conectar()
     c = conn.cursor()
 
-    # Visitas
     c.execute("""
     CREATE TABLE IF NOT EXISTS visitas (
         id SERIAL PRIMARY KEY,
-        fecha DATE,
+        fecha DATE NOT NULL,
         servicio TEXT,
         nombre TEXT,
         direccion TEXT,
@@ -60,18 +59,17 @@ def crear_tablas():
     )
     """)
 
-    # Detalle visita
     c.execute("""
     CREATE TABLE IF NOT EXISTS detalle_visita (
-    id SERIAL PRIMARY KEY,
-    visita_id INTEGER REFERENCES visitas(id) ON DELETE CASCADE,
-    visitado_por TEXT,
-    fecha_visita DATE,
-    nota TEXT
+        id SERIAL PRIMARY KEY,
+        visita_id INTEGER REFERENCES visitas(id) ON DELETE CASCADE,
+        visitado_por TEXT,
+        fecha_visita DATE,
+        nota TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
     """)
 
-    # Usuarios
     c.execute("""
     CREATE TABLE IF NOT EXISTS usuarios (
         id SERIAL PRIMARY KEY,
@@ -81,7 +79,6 @@ def crear_tablas():
     )
     """)
 
-    # Crear usuarios por defecto si no existen
     usuarios_default = [
         ("pastor", "Salmo1263103", "Pastor"),
         ("secretaria", "Visitas126", "Secretaria"),
@@ -105,28 +102,24 @@ crear_tablas()
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        usuario_input = request.form["usuario"].strip()
+        usuario_input = request.form["usuario"].strip().lower()
         clave = request.form["clave"]
 
-        # Permitir solo Pastor/pastor, Secretaria/secretaria, Asistente/asistente
-        if not (
-            usuario_input.lower() in ["pastor", "secretaria", "asistente"] and
-            (usuario_input == usuario_input.lower() or usuario_input == usuario_input.capitalize())
-        ):
+        if usuario_input not in ["pastor", "secretaria", "asistente"]:
             return render_template("login.html", error="Usuario inválido")
-
-        usuario = usuario_input.lower()
 
         conn = conectar()
         c = conn.cursor()
-        c.execute("SELECT * FROM usuarios WHERE usuario=%s", (usuario,))
+        c.execute("SELECT * FROM usuarios WHERE usuario=%s", (usuario_input,))
         user = c.fetchone()
         conn.close()
 
         if user and check_password_hash(user["password"], clave):
+            session.permanent = True
             session["logueado"] = True
             session["usuario"] = user["usuario"]
             session["nombre"] = user["nombre"]
+            session.pop("expirada", None)
             return redirect("/visitas")
 
         return render_template("login.html", error="Credenciales incorrectas")
@@ -139,7 +132,7 @@ def logout():
     session.clear()
     return redirect("/login")
 
-# ---------- REGISTRO (PÚBLICO) ----------
+# ---------- REGISTRO PÚBLICO ----------
 @app.route("/", methods=["GET", "POST"])
 def registro():
     if request.method == "POST":
@@ -147,10 +140,10 @@ def registro():
         c = conn.cursor()
 
         c.execute("""
-        INSERT INTO visitas
-        (fecha, servicio, nombre, direccion, telefono,
-         invitado_por, sexo, rango_edad, visita_casa)
-        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
+            INSERT INTO visitas
+            (fecha, servicio, nombre, direccion, telefono,
+             invitado_por, sexo, rango_edad, visita_casa)
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
         """, (
             request.form["fecha"],
             request.form["servicio"],
@@ -204,15 +197,15 @@ def visitas():
     c.execute(query, params)
     visitas = c.fetchall()
 
-    # Contadores de dashboard
+    # Estadísticas
     c.execute("SELECT COUNT(*) FROM visitas")
-    total = c.fetchone()[0]
+    total = c.fetchone()["count"]
 
     c.execute("SELECT COUNT(*) FROM visitas WHERE visitado='Si'")
-    visitados = c.fetchone()[0]
+    visitados = c.fetchone()["count"]
 
     c.execute("SELECT COUNT(*) FROM visitas WHERE visitado='No'")
-    pendientes = c.fetchone()[0]
+    pendientes = c.fetchone()["count"]
 
     conn.close()
 
@@ -295,7 +288,7 @@ def eliminar(id):
     conn = conectar()
     c = conn.cursor()
 
-    # Eliminar también sus visitas
+    # Seguridad: borrar visitas hijas primero
     c.execute("DELETE FROM detalle_visita WHERE visita_id=%s", (id,))
     c.execute("DELETE FROM visitas WHERE id=%s", (id,))
 
@@ -311,7 +304,6 @@ def visitar(id):
     conn = conectar()
     c = conn.cursor()
 
-    # Si viene POST, SIEMPRE crear nueva visita
     if request.method == "POST":
         c.execute("""
             INSERT INTO detalle_visita
@@ -324,7 +316,7 @@ def visitar(id):
             request.form.get("nota", "")
         ))
 
-        # Marcar como visitado
+        # 🔥 Marcar como visitado si ya tiene al menos una visita
         c.execute("""
             UPDATE visitas
             SET visitado='Si'
@@ -333,7 +325,7 @@ def visitar(id):
 
         conn.commit()
 
-    # Cargar historial de visitas
+    # Historial completo
     c.execute("""
         SELECT id, visitado_por, fecha_visita, nota
         FROM detalle_visita
@@ -356,6 +348,7 @@ def imprimir():
 
     conn = conectar()
     c = conn.cursor()
+
     c.execute("""
         SELECT fecha, nombre, invitado_por, visitado
         FROM visitas
@@ -367,3 +360,4 @@ def imprimir():
     conn.close()
 
     return render_template("imprimir.html", visitas=visitas, desde=desde, hasta=hasta)
+
