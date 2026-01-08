@@ -24,23 +24,14 @@
             </thead>
             <tbody>
                 {% for v in visitas %}
-                <tr 
-                    {% if loop.first %}
-                        style="background:#eef4ff; font-weight:600;"
-                        title="Última visita registrada"
-                    {% endif %}
-                >
-                    <td>{{ v.fecha_visita.strftime('%d/%m/%Y') }}</td>
+                <tr {% if loop.first %} style="background:#eef4ff;font-weight:600;" {% endif %}>
+                    <td>{{ v.fecha_visita }}</td>
                     <td>{{ v.visitado_por }}</td>
                     <td>{{ v.nota or "—" }}</td>
                     <td style="text-align:center">
-                        <a href="/editar_visita/{{ v.id }}" title="Editar esta visita">✏️</a>
+                        <a href="/editar_visita/{{ v.id }}">✏️</a>
                         &nbsp;
-                        <a href="/eliminar_visita/{{ v.id }}" 
-                           onclick="return confirm('¿Eliminar esta visita?')" 
-                           title="Eliminar esta visita">
-                           🗑️
-                        </a>
+                        <a href="/eliminar_visita/{{ v.id }}" onclick="return confirm('¿Eliminar esta visita?')">🗑️</a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -79,18 +70,10 @@
         </select>
 
         <label>Fecha de la visita</label>
-        <input 
-            type="date" 
-            name="fecha_visita" 
-            required
-            value="{{ now().strftime('%Y-%m-%d') }}"
-        >
+        <input type="date" name="fecha_visita" required>
 
         <label>Nota</label>
-        <textarea 
-            name="nota" 
-            placeholder="Observaciones de la visita..."
-        ></textarea>
+        <textarea name="nota" placeholder="Observaciones de la visita..."></textarea>
 
         <button>
             💾 Guardar visita
