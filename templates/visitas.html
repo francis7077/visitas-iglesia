@@ -1,74 +1,74 @@
 {% extends "base.html" %}
 {% block contenido %}
 
-<h1 class="titulo-visitas">📋 Visitas Registradas</h1>
+<h1 class="titulo-visitas">📋 Gestión de Seguimiento</h1>
 
-<!-- 🔐 Mensaje si la sesión expiró -->
 {% if session.get("expirada") %}
 <div class="alerta alerta-roja">
-    ⏱️ Tu sesión expiró por inactividad. Inicia sesión nuevamente.
+    ⏱️ Tu sesión expiró por inactividad. Por seguridad, inicia sesión nuevamente.
 </div>
 {% endif %}
 
-<!-- 📊 Dashboard rápido -->
-<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px;">
-    <div class="tarjeta-perfil" style="text-align:center;">
-        <div style="font-size:22px; font-weight:bold;">{{ total }}</div>
-        <div style="font-size:13px; color:#555;">Total registrados</div>
+<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:15px; margin-bottom:25px;">
+    <div class="tarjeta-perfil" style="text-align:center; border-top: 4px solid #3b82f6;">
+        <div style="font-size:24px; font-weight:bold;">{{ total }}</div>
+        <div style="font-size:12px; color:#666; text-transform:uppercase;">Registros en período</div>
     </div>
-    <div class="tarjeta-perfil" style="text-align:center; border-left:5px solid #22c55e;">
-        <div style="font-size:22px; font-weight:bold; color:#16a34a;">{{ visitados }}</div>
-        <div style="font-size:13px; color:#555;">Visitados</div>
+    <div class="tarjeta-perfil" style="text-align:center; border-top: 4px solid #22c55e;">
+        <div style="font-size:24px; font-weight:bold; color:#16a34a;">{{ visitados }}</div>
+        <div style="font-size:12px; color:#666; text-transform:uppercase;">Personas Visitadas</div>
     </div>
-    <div class="tarjeta-perfil" style="text-align:center; border-left:5px solid #f59e0b;">
-        <div style="font-size:22px; font-weight:bold; color:#d97706;">{{ pendientes }}</div>
-        <div style="font-size:13px; color:#555;">Pendientes</div>
+    <div class="tarjeta-perfil" style="text-align:center; border-top: 4px solid #f59e0b;">
+        <div style="font-size:24px; font-weight:bold; color:#d97706;">{{ pendientes }}</div>
+        <div style="font-size:12px; color:#666; text-transform:uppercase;">Pendientes de Visita</div>
     </div>
 </div>
 
-<!-- 🔍 Barra de filtros -->
 <form method="get" class="filtros filtros-card">
     <div class="filtro-grupo">
-        <label>Desde</label>
+        <label>Fecha Inicial</label>
         <input type="date" name="desde" value="{{ desde }}">
     </div>
 
     <div class="filtro-grupo">
-        <label>Hasta</label>
+        <label>Fecha Final</label>
         <input type="date" name="hasta" value="{{ hasta }}">
     </div>
 
     <div class="filtro-grupo filtro-boton">
-        <button type="submit">🔍 Filtrar</button>
+        <button type="submit">🔍 Filtrar Datos</button>
+        {% if desde or hasta %}
+            <a href="/visitas" class="link-limpiar">Limpiar Filtros</a>
+        {% endif %}
     </div>
 </form>
 
-<!-- ⚙️ Acciones -->
 <div class="acciones acciones-fijas">
-    <button id="btnImprimir" disabled>🖨️ Imprimir</button>
-    <button id="btnEditar" disabled>✏️ Editar</button>
-    <button id="btnEliminar" disabled>🗑️ Eliminar</button>
+    <button id="btnImprimir" class="btn-accion" title="Filtre un rango de fechas para imprimir" {{ 'disabled' if not (desde and hasta) }}>
+        🖨️ Reporte PDF
+    </button>
+    <button id="btnEditar" class="btn-accion" disabled>✏️ Editar</button>
+    <button id="btnEliminar" class="btn-accion" disabled>🗑️ Eliminar</button>
 </div>
 
-<!-- 📋 Tabla -->
 <div class="tabla-contenedor">
 <table id="tablaVisitas">
     <thead>
         <tr>
-            <th>Fecha</th>
-            <th>Nombre</th>
+            <th>Fecha Registro</th>
+            <th>Nombre Completo</th>
             <th>Invitado por</th>
             <th>Estado</th>
-            <th>Detalle</th>
+            <th>Esfuerzo Visita</th>
         </tr>
     </thead>
 
     <tbody>
     {% for r in visitas %}
         <tr data-id="{{ r['id'] }}" onclick="seleccionarFila(this)">
-
+            
             <td class="col-fecha">
-                {{ r['fecha'].strftime('%d/%m/%Y') }}
+                {{ r['fecha'] | formato_fecha }}
             </td>
 
             <td class="col-nombre">
@@ -77,32 +77,34 @@
                 </a>
             </td>
 
-            <td class="col-invitado">{{ r['invitado_por'] or "—" }}</td>
+            <td class="col-invitado">{{ r['invitado_por'] or "Espontáneo" }}</td>
 
             <td class="col-estado">
                 {% if r['visitado'] == 'Si' %}
-                    <span class="badge ok">✔ Visitado</span>
+                    <span class="badge ok">✔ COMPLETADO</span>
                 {% else %}
-                    <span class="badge no">⏳ Pendiente</span><br>
-                    <a href="/visitar/{{ r['id'] }}" class="link-pequeño" onclick="event.stopPropagation()">
-                        Marcar
+                    <span class="badge no">⏳ PENDIENTE</span><br>
+                    <a href="/visitar/{{ r['id'] }}" class="link-marcar" onclick="event.stopPropagation()">
+                        Realizar Visita
                     </a>
                 {% endif %}
             </td>
 
             <td class="col-detalle">
-                {% if r['visitado'] == 'Si' %}
-                    <a href="/visitar/{{ r['id'] }}" onclick="event.stopPropagation()">📄 Ver</a>
-                {% else %}
-                    —
-                {% endif %}
+                <a href="/visitar/{{ r['id'] }}" class="btn-historial" onclick="event.stopPropagation()">
+                    {% if r['total_visitas'] > 0 %}
+                        📄 {{ r['total_visitas'] }} seguimiento(s)
+                    {% else %}
+                        <span style="color:#999;">Sin visitas</span>
+                    {% endif %}
+                </a>
             </td>
 
         </tr>
     {% else %}
         <tr>
             <td colspan="5" class="vacio">
-                No hay visitas registradas en este período
+                No se encontraron registros para los filtros seleccionados.
             </td>
         </tr>
     {% endfor %}
@@ -110,51 +112,55 @@
 </table>
 </div>
 
-<a href="/" class="btn-volver">← Volver al registro</a>
+<a href="/" class="btn-volver">← Registrar Nueva Persona</a>
 
 <script>
 let idSeleccionado = null;
 
 function seleccionarFila(fila) {
+    // Limpiar selección previa
     document.querySelectorAll("#tablaVisitas tbody tr").forEach(tr => {
         tr.classList.remove("fila-activa");
     });
 
+    // Marcar nueva selección
     fila.classList.add("fila-activa");
     idSeleccionado = fila.dataset.id;
 
+    // Habilitar botones de acción
     document.getElementById("btnEditar").disabled = false;
     document.getElementById("btnEliminar").disabled = false;
 }
 
-// Editar
+// Lógica de navegación
 document.getElementById("btnEditar").onclick = function () {
-    if (idSeleccionado) {
-        window.location.href = "/editar/" + idSeleccionado;
-    }
+    if (idSeleccionado) window.location.href = "/editar/" + idSeleccionado;
 };
 
-// Eliminar
 document.getElementById("btnEliminar").onclick = function () {
-    if (idSeleccionado && confirm("¿Desea eliminar este registro?")) {
+    if (idSeleccionado && confirm("¿Está seguro de eliminar este registro? Esto borrará también su historial de visitas.")) {
         window.location.href = "/eliminar/" + idSeleccionado;
     }
 };
 
-// Imprimir
-const desde = "{{ desde }}";
-const hasta = "{{ hasta }}";
-const btnImprimir = document.getElementById("btnImprimir");
-
-if (desde && hasta) {
-    btnImprimir.disabled = false;
-}
-
-btnImprimir.onclick = function () {
-    if (desde && hasta) {
-        window.open(`/imprimir?desde=${desde}&hasta=${hasta}`, "_blank");
+// Imprimir reporte filtrado
+document.getElementById("btnImprimir").onclick = function () {
+    const d = "{{ desde }}";
+    const h = "{{ hasta }}";
+    if (d && h) {
+        window.open(`/imprimir?desde=${d}&hasta=${h}`, "_blank");
     }
 };
 </script>
+
+<style>
+    /* Valor agregado: Estilos para mejorar la experiencia de usuario */
+    .fila-activa { background-color: #e0f2fe !important; border-left: 4px solid #0284c7; }
+    .btn-accion:disabled { opacity: 0.5; cursor: not-allowed; }
+    .link-limpiar { color: #ef4444; font-size: 0.8em; margin-left: 10px; text-decoration: none; }
+    .link-marcar { font-size: 0.85em; color: #2563eb; font-weight: bold; }
+    .btn-historial { text-decoration: none; color: #4b5563; font-size: 0.9em; }
+    .btn-historial:hover { color: #000; }
+</style>
 
 {% endblock %}

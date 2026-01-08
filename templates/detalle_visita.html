@@ -1,91 +1,126 @@
 {% extends "base.html" %}
 {% block contenido %}
 
-<h2 class="titulo-principal">📖 Historial de Visitas</h2>
+<h2 class="titulo-principal">📖 Seguimiento de Visitante</h2>
+
+<div style="display: flex; gap: 15px; margin-bottom: 20px;">
+    <div class="tarjeta-perfil" style="flex: 1; text-align: center; background: #f8fafc;">
+        <div style="font-size: 0.8em; color: #64748b; text-transform: uppercase;">Total Seguimientos</div>
+        <div style="font-size: 1.8em; font-weight: bold; color: #1e40af;">{{ total_visitas }}</div>
+    </div>
+    <div class="tarjeta-perfil" style="flex: 1; text-align: center; background: #f8fafc;">
+        <div style="font-size: 0.8em; color: #64748b; text-transform: uppercase;">Último Contacto</div>
+        <div style="font-size: 1.1em; font-weight: bold; padding-top: 5px;">
+            {{ ultima_visita.fecha_visita | formato_fecha if ultima_visita else 'N/A' }}
+        </div>
+    </div>
+</div>
 
 <div class="tarjeta-perfil">
-
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h3>Visitas realizadas</h3>
-        <span class="badge ok">
-            {{ visitas|length }} registradas
-        </span>
+    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 15px;">
+        <h3 style="margin:0;">Historial Cronológico</h3>
+        <span class="badge ok">{{ visitas|length }} registros</span>
     </div>
 
     {% if visitas %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Fecha</th>
-                    <th>Visitado por</th>
-                    <th>Nota</th>
-                    <th style="text-align:center">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for v in visitas %}
-                <tr {% if loop.first %} style="background:#eef4ff;font-weight:600;" {% endif %}>
-                    <td>{{ v.fecha_visita }}</td>
-                    <td>{{ v.visitado_por }}</td>
-                    <td>{{ v.nota or "—" }}</td>
-                    <td style="text-align:center">
-                        <a href="/editar_visita/{{ v.id }}">✏️</a>
-                        &nbsp;
-                        <a href="/eliminar_visita/{{ v.id }}" onclick="return confirm('¿Eliminar esta visita?')">🗑️</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="tabla-contenedor">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Ministerio / Visitador</th>
+                        <th>Observaciones / Notas</th>
+                        <th style="text-align:center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for v in visitas %}
+                    <tr {% if loop.first %} style="background: #f0f7ff; border-left: 4px solid #3b82f6;" {% endif %}>
+                        
+                        <td style="white-space: nowrap;">
+                            <strong>{{ v.fecha_visita | formato_fecha }}</strong>
+                        </td>
+                        
+                        <td>
+                            <span style="color: #1e40af; font-weight: 500;">{{ v.visitado_por }}</span>
+                        </td>
+                        
+                        <td>
+                            <i style="color: #475569; font-size: 0.95em;">"{{ v.nota or "Sin observaciones registradas" }}"</i>
+                        </td>
+                        
+                        <td style="text-align:center">
+                            <div style="display: flex; justify-content: center; gap: 10px;">
+                                <a href="/editar_visita/{{ v.id }}" title="Editar" style="text-decoration:none;">✏️</a>
+                                <a href="/eliminar_visita/{{ v.id }}" title="Eliminar" 
+                                   onclick="return confirm('¿Desea borrar este registro del historial?')" 
+                                   style="text-decoration:none;">🗑️</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
-        <div class="alerta" style="margin-top:12px;">
-            🟦 La fila resaltada corresponde a la <strong>última visita realizada</strong>.
+        <div class="alerta-info" style="margin-top:12px; font-size: 0.85em; background: #e0f2fe; padding: 10px; border-radius: 6px; color: #0369a1;">
+            ℹ️ La fila superior azul representa la actividad más reciente con este visitante.
         </div>
 
     {% else %}
-        <div class="alerta">
-            ⚠️ Este visitante aún no ha sido visitado.
+        <div class="alerta-roja" style="text-align: center; padding: 30px; background: #fff1f2; border: 1px dashed #f43f5e; border-radius: 8px;">
+            <div style="font-size: 2em; margin-bottom: 10px;">⏳</div>
+            <strong style="color: #be123c;">Aún no se han realizado visitas de seguimiento.</strong>
+            <p style="color: #fb7185; font-size: 0.9em;">Utilice el formulario de abajo para registrar el primer contacto.</p>
         </div>
     {% endif %}
-
 </div>
 
 <br>
 
-<div class="tarjeta-perfil">
+<div class="tarjeta-perfil" style="border-top: 5px solid #10b981;">
+    <h3 style="color: #047857; display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 1.2em;">➕</span> Registrar Nuevo Seguimiento
+    </h3>
 
-    <h3>➕ Registrar nueva visita</h3>
+    <form method="post" style="margin-top: 15px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div>
+                <label style="display:block; margin-bottom: 5px; font-weight: 600;">Visitado por:</label>
+                <select name="visitado_por" required style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+                    <option value="">Seleccione Ministerio</option>
+                    <option>Sociedad de Jóvenes</option>
+                    <option>Sociedad de Damas</option>
+                    <option>Sociedad de Caballeros</option>
+                    <option>Directiva Local</option>
+                    <option>Familia Pastoral</option>
+                    <option>Visita Mixta</option>
+                </select>
+            </div>
+            <div>
+                <label style="display:block; margin-bottom: 5px; font-weight: 600;">Fecha de la visita:</label>
+                <input type="date" name="fecha_visita" required 
+                       value="{{ ahora.strftime('%Y-%m-%d') }}"
+                       style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+            </div>
+        </div>
 
-    <form method="post">
+        <div style="margin-top: 15px;">
+            <label style="display:block; margin-bottom: 5px; font-weight: 600;">Nota / Observación Pastoral:</label>
+            <textarea name="nota" rows="3" 
+                      placeholder="Ej: Se oró por su familia, solicitó visita del pastor..."
+                      style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc; font-family: inherit;"></textarea>
+        </div>
 
-        <label>Visitado por</label>
-        <select name="visitado_por" required>
-            <option value="">Seleccione</option>
-            <option>Sociedad de Jóvenes</option>
-            <option>Sociedad de Damas</option>
-            <option>Sociedad de Caballeros</option>
-            <option>Directiva Local</option>
-            <option>Familia Pastoral</option>
-            <option>Visita Mixta</option>
-        </select>
-
-        <label>Fecha de la visita</label>
-        <input type="date" name="fecha_visita" required>
-
-        <label>Nota</label>
-        <textarea name="nota" placeholder="Observaciones de la visita..."></textarea>
-
-        <button>
-            💾 Guardar visita
+        <button type="submit" style="margin-top: 15px; width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">
+            💾 Guardar Reporte de Visita
         </button>
-
     </form>
-
 </div>
 
-<div style="text-align:center; margin-top:20px;">
-    <a href="/visitas" class="btn-volver">
-        ⬅ Volver a visitas
+<div style="text-align:center; margin-top:30px; margin-bottom: 50px;">
+    <a href="/visitas" class="btn-volver" style="text-decoration: none; color: #64748b; font-weight: 500;">
+        ⬅ Volver al Panel General
     </a>
 </div>
 

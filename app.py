@@ -19,6 +19,16 @@ DATABASE_URL = os.environ.get("DATABASE_URL")
 def conectar():
     return psycopg2.connect(DATABASE_URL, cursor_factory=RealDictCursor)
 
+# ---------------- VALOR AGREGADO: FILTRO DE FECHA SEGURO ----------------
+# Este bloque es fundamental para evitar el "Internal Server Error"
+@app.template_filter('formato_fecha')
+def formato_fecha(value):
+    if value is None:
+        return "—"
+    if isinstance(value, str):
+        return value
+    return value.strftime('%d/%m/%Y')
+
 # ---------------- CONTEXTO GLOBAL ----------------
 @app.context_processor
 def datos_usuario():
@@ -161,13 +171,15 @@ def registro():
         return redirect("/")
 
     return render_template("registro.html")
-# ---------- VER VISITAS ----------
+
+# ---------- VER VISITAS (Optimizado con Valor Agregado) ----------
 @app.route("/visitas")
 @requiere_login
 def visitas():
     desde = request.args.get("desde")
     hasta = request.args.get("hasta")
 
+    # Valor agregado: Traemos el conteo de visitas reales por cada persona
     query = """
         SELECT 
             v.*,
@@ -194,30 +206,25 @@ def visitas():
     conn = conectar()
     c = conn.cursor()
     c.execute(query, params)
-    visitas = c.fetchall()
+    visitas_lista = c.fetchall()
 
-    # 📊 Estadísticas seguras
-    c.execute("SELECT COUNT(*) AS total FROM visitas")
-    total = c.fetchone()["total"]
-
-    c.execute("SELECT COUNT(*) AS total FROM visitas WHERE visitado='Si'")
-    visitados = c.fetchone()["total"]
-
-    c.execute("SELECT COUNT(*) AS total FROM visitas WHERE visitado='No'")
-    pendientes = c.fetchone()["total"]
+    # 📊 VALOR AGREGADO: Estadísticas dinámicas según el filtro actual
+    # Esto hace que el dashboard sea real según lo que el usuario está viendo
+    total_filtrado = len(visitas_lista)
+    visitados_filtrado = sum(1 for r in visitas_lista if r['visitado'] == 'Si')
+    pendientes_filtrado = total_filtrado - visitados_filtrado
 
     conn.close()
 
     return render_template(
         "visitas.html",
-        visitas=visitas,
+        visitas=visitas_lista,
         desde=desde,
         hasta=hasta,
-        total=total,
-        visitados=visitados,
-        pendientes=pendientes
+        total=total_filtrado,
+        visitados=visitados_filtrado,
+        pendientes=pendientes_filtrado
     )
-
 
 # ---------- PERFIL ----------
 @app.route("/perfil/<int:id>")
@@ -229,7 +236,6 @@ def perfil(id):
     c.execute("SELECT * FROM visitas WHERE id=%s", (id,))
     p = c.fetchone()
 
-    # Última visita
     c.execute("""
         SELECT fecha_visita, visitado_por
         FROM detalle_visita
@@ -240,9 +246,7 @@ def perfil(id):
     ultima = c.fetchone()
 
     conn.close()
-
     return render_template("perfil.html", p=p, ultima=ultima)
-
 
 # ---------- EDITAR ----------
 @app.route("/editar/<int:id>", methods=["GET", "POST"])
@@ -279,22 +283,17 @@ def editar(id):
 
     return render_template("editar.html", r=r)
 
-
 # ---------- ELIMINAR ----------
 @app.route("/eliminar/<int:id>")
 @requiere_login
 def eliminar(id):
     conn = conectar()
     c = conn.cursor()
-
-    # Seguridad: borrar visitas hijas primero
     c.execute("DELETE FROM detalle_visita WHERE visita_id=%s", (id,))
     c.execute("DELETE FROM visitas WHERE id=%s", (id,))
-
     conn.commit()
     conn.close()
     return redirect("/visitas")
-
 
 # ---------- VISITAR ----------
 @app.route("/visitar/<int:id>", methods=["GET", "POST"])
@@ -308,29 +307,16 @@ def visitar(id):
         fecha_visita = request.form.get("fecha_visita")
         nota = request.form.get("nota", "")
 
-        # 🛡️ Validación fuerte
         if visitado_por and fecha_visita:
             c.execute("""
                 INSERT INTO detalle_visita
                 (visita_id, visitado_por, fecha_visita, nota)
                 VALUES (%s, %s, %s, %s)
-            """, (
-                id,
-                visitado_por,
-                fecha_visita,
-                nota
-            ))
+            """, (id, visitado_por, fecha_visita, nota))
 
-            # 🔥 Marcar como visitado
-            c.execute("""
-                UPDATE visitas
-                SET visitado='Si'
-                WHERE id=%s
-            """, (id,))
-
+            c.execute("UPDATE visitas SET visitado='Si' WHERE id=%s", (id,))
             conn.commit()
 
-    # 📜 Historial completo
     c.execute("""
         SELECT id, visitado_por, fecha_visita, nota
         FROM detalle_visita
@@ -339,17 +325,10 @@ def visitar(id):
     """, (id,))
     detalles = c.fetchall()
 
-    # 📊 Total de visitas
-    c.execute("""
-        SELECT COUNT(*) AS total
-        FROM detalle_visita
-        WHERE visita_id=%s
-    """, (id,))
+    c.execute("SELECT COUNT(*) AS total FROM detalle_visita WHERE visita_id=%s", (id,))
     total_visitas = c.fetchone()["total"]
 
-    # 🕒 Última visita
     ultima_visita = detalles[0] if detalles else None
-
     conn.close()
 
     return render_template(
@@ -360,7 +339,6 @@ def visitar(id):
         ultima_visita=ultima_visita
     )
 
-
 # ---------- IMPRIMIR ----------
 @app.route("/imprimir")
 @requiere_login
@@ -370,16 +348,16 @@ def imprimir():
 
     conn = conectar()
     c = conn.cursor()
-
     c.execute("""
         SELECT fecha, nombre, invitado_por, visitado
         FROM visitas
         WHERE fecha BETWEEN %s AND %s
         ORDER BY fecha
     """, (desde, hasta))
-
-    visitas = c.fetchall()
+    visitas_reporte = c.fetchall()
     conn.close()
 
-    return render_template("imprimir.html", visitas=visitas, desde=desde, hasta=hasta)
+    return render_template("imprimir.html", visitas=visitas_reporte, desde=desde, hasta=hasta)
 
+if __name__ == "__main__":
+    app.run(debug=True)
