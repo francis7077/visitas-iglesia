@@ -1,79 +1,117 @@
 {% extends "base.html" %}
 {% block contenido %}
 
-<h2 class="titulo-principal">Perfil del Visitante</h2>
+<div style="max-width: 700px; margin: 0 auto;">
+    <h2 class="titulo-principal" style="text-align: left; margin-bottom: 20px; font-size: 1.5em; color: #1e3a8a;">
+        👤 Expediente del Visitante
+    </h2>
 
-<div class="tarjeta-perfil perfil-premium">
+    <div class="tarjeta-perfil perfil-premium" style="background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: none;">
+        
+        <div class="perfil-header" style="background: linear-gradient(to right, #f8fafc, #ffffff); padding: 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+            
+            <div class="avatar" style="width: 80px; height: 80px; background: #e0f2fe; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 35px; border: 4px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                {% if p.sexo == 'Femenino' %}👩{% else %}👨{% endif %}
+            </div>
 
-    <!-- Encabezado -->
-    <div class="perfil-header">
-        <div class="avatar">
-            👤
+            <div class="info-principal" style="flex: 1; min-width: 200px;">
+                <h3 style="margin: 0; font-size: 1.8em; color: #1e293b; letter-spacing: -0.5px;">{{ p.nombre }}</h3>
+                <span class="subtexto" style="color: #64748b; font-weight: 500; display: block; margin-top: 5px;">
+                    <span style="color: #3b82f6;">⛪ {{ p.servicio }}</span> · 📅 {{ p.fecha.strftime('%d/%m/%Y') }}
+                </span>
+            </div>
+
+            <div class="estado">
+                {% if p.visitado == 'Si' %}
+                    <span class="badge" style="background: #dcfce7; color: #15803d; padding: 8px 16px; border-radius: 30px; font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; gap: 5px;">
+                        <span style="width: 8px; height: 8px; background: #22c55e; border-radius: 50%;"></span> VISITADO
+                    </span>
+                {% else %}
+                    <span class="badge" style="background: #fee2e2; color: #b91c1c; padding: 8px 16px; border-radius: 30px; font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; gap: 5px;">
+                        <span style="width: 8px; height: 8px; background: #ef4444; border-radius: 50%; animation: pulse 2s infinite;"></span> PENDIENTE
+                    </span>
+                {% endif %}
+            </div>
         </div>
 
-        <div class="info-principal">
-            <h3>{{ p.nombre }}</h3>
-            <span class="subtexto">
-                {{ p.servicio }} · {{ p.fecha.strftime('%d/%m/%Y') }}
-            </span>
+        <div class="perfil-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1px; background: #f1f5f9;">
+            
+            <div class="dato" style="background: white; padding: 20px;">
+                <span style="font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700; display: block; margin-bottom: 5px;">📍 Dirección</span>
+                <strong style="color: #334155; font-size: 14px;">{{ p.direccion or "Sin dirección registrada" }}</strong>
+            </div>
+
+            <div class="dato" style="background: white; padding: 20px;">
+                <span style="font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700; display: block; margin-bottom: 5px;">📞 Teléfono</span>
+                {% if p.telefono %}
+                    <a href="tel:{{ p.telefono }}" style="color: #2563eb; text-decoration: none; font-weight: 700; font-size: 15px;">{{ p.telefono }}</a>
+                {% else %}
+                    <strong style="color: #cbd5e1;">—</strong>
+                {% endif %}
+            </div>
+
+            <div class="dato" style="background: white; padding: 20px;">
+                <span style="font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700; display: block; margin-bottom: 5px;">🤝 Invitado por</span>
+                <strong style="color: #334155;">{{ p.invitado_por or "Llegada espontánea" }}</strong>
+            </div>
+
+            <div class="dato" style="background: white; padding: 20px;">
+                <span style="font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700; display: block; margin-bottom: 5px;">🚻 Sexo</span>
+                <strong style="color: #334155;">{{ p.sexo }}</strong>
+            </div>
+
+            <div class="dato" style="background: white; padding: 20px;">
+                <span style="font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700; display: block; margin-bottom: 5px;">🎂 Edad</span>
+                <strong style="color: #334155;">{{ p.rango_edad }}</strong>
+            </div>
+
+            <div class="dato" style="background: white; padding: 20px;">
+                <span style="font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700; display: block; margin-bottom: 5px;">🏠 Visita Domiciliaria</span>
+                <strong style="{{ 'color: #16a34a;' if p.visita_casa == 'Sí' else 'color: #64748b;' }}">
+                    {{ 'Desea ser visitado' if p.visita_casa == 'Sí' else 'No solicitada' }}
+                </strong>
+            </div>
         </div>
 
-        <div class="estado">
-            {% if p.visitado == 'Si' %}
-                <span class="badge ok">🟢 Visitado</span>
-            {% else %}
-                <span class="badge pendiente">🔴 Pendiente</span>
-            {% endif %}
+        {% if p.visitado != 'Si' %}
+            <div style="background: #fff7ed; padding: 15px 30px; display: flex; align-items: center; gap: 15px;">
+                <span style="font-size: 20px;">⚠️</span>
+                <p style="margin: 0; font-size: 13px; color: #9a3412; font-weight: 500;">
+                    Este registro está pendiente de seguimiento pastoral.
+                </p>
+            </div>
+        {% endif %}
+
+        <div style="padding: 20px 30px; background: #f8fafc; text-align: center;">
+            <a href="/visitar/{{ p.id }}" style="display: block; background: #3b82f6; color: white; text-decoration: none; padding: 12px; border-radius: 12px; font-weight: 700; transition: background 0.3s;">
+                📝 Gestionar Seguimiento / Ver Historial
+            </a>
         </div>
     </div>
 
-    <!-- Información -->
-    <div class="perfil-grid">
-
-        <div class="dato">
-            <span>📍 Dirección</span>
-            <strong>{{ p.direccion or "—" }}</strong>
-        </div>
-
-        <div class="dato">
-            <span>📞 Teléfono</span>
-            <strong>{{ p.telefono or "—" }}</strong>
-        </div>
-
-        <div class="dato">
-            <span>🤝 Invitado por</span>
-            <strong>{{ p.invitado_por or "—" }}</strong>
-        </div>
-
-        <div class="dato">
-            <span>🚻 Sexo</span>
-            <strong>{{ p.sexo }}</strong>
-        </div>
-
-        <div class="dato">
-            <span>🎂 Rango de edad</span>
-            <strong>{{ p.rango_edad }}</strong>
-        </div>
-
-        <div class="dato">
-            <span>🏠 ¿Necesita visita?</span>
-            <strong>{{ p.visita_casa }}</strong>
-        </div>
-
+    <div class="acciones-perfil" style="margin-top: 25px; text-align: center; display: flex; justify-content: center; gap: 20px;">
+        <a href="/visitas" style="text-decoration: none; color: #64748b; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+            ⬅ Volver al Listado
+        </a>
+        <a href="/editar/{{ p.id }}" style="text-decoration: none; color: #3b82f6; font-weight: 600; font-size: 14px;">
+            ✏️ Editar Perfil
+        </a>
     </div>
-
-    {% if p.visitado != 'Si' %}
-        <div class="alerta">
-            ⚠️ Este visitante aún no ha sido visitado. Se recomienda seguimiento.
-        </div>
-    {% endif %}
-
 </div>
 
-<div class="acciones-perfil">
-    <a href="/visitas" class="btn-regresar">
-        ⬅ Volver a Visitas
-    </a>
-</div>
+<style>
+    @keyframes pulse {
+        0% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.5); opacity: 0.5; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+    
+    .dato:hover { background: #f8fafc !important; }
+    
+    @media (max-width: 600px) {
+        .perfil-header { text-align: center; justify-content: center; }
+        .info-principal { text-align: center; }
+    }
+</style>
 
 {% endblock %}

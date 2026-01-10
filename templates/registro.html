@@ -1,20 +1,24 @@
 {% extends "base.html" %}
 {% block contenido %}
 
-<h2 class="titulo-principal">📝 Registro de Visitas</h2>
+<div class="tarjeta-perfil" style="text-align: center; border-bottom: 5px solid #4a6cf7; margin-bottom: 30px;">
+    <h2 style="margin: 0; color: #1e40af;">📝 Registro de Invitados</h2>
+    <p style="color: #64748b; margin-top: 10px;">"Porque tuve hambre, y me disteis de comer; tuve sed, y me disteis de beber; fui forastero, y me recogisteis." - <b>Mateo 25:35</b></p>
+</div>
 
-<form method="post" class="form-card">
+<form method="post" class="form-card" style="background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
 
-    <!-- Fecha y Servicio -->
-    <div class="form-grid">
-        <div>
-            <label>📅 Fecha de asistencia</label>
-            <input type="date" name="fecha" required>
+    <h4 style="color: #4a6cf7; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 20px;">🗓️ Información del Servicio</h4>
+    
+    <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px;">
+        <div class="form-group">
+            <label style="font-weight: 700; display: block; margin-bottom: 8px;">📅 Fecha de asistencia</label>
+            <input type="date" name="fecha" required style="width: 100%; padding: 12px; border-radius: 12px; border: 1.5px solid #cbd5e1;" value="{{ ahora.strftime('%Y-%m-%d') }}">
         </div>
 
-        <div>
-            <label>⛪ Servicio</label>
-            <select name="servicio">
+        <div class="form-group">
+            <label style="font-weight: 700; display: block; margin-bottom: 8px;">⛪ Servicio</label>
+            <select name="servicio" style="width: 100%; padding: 12px; border-radius: 12px; border: 1.5px solid #cbd5e1; background-color: white;">
                 <option>Servicio dominical</option>
                 <option>Servicio los viernes</option>
                 <option>Servicio de jóvenes</option>
@@ -27,40 +31,42 @@
         </div>
     </div>
 
-    <!-- Nombre -->
-    <label>👤 Nombre completo</label>
-    <input name="nombre" required>
+    <h4 style="color: #4a6cf7; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 20px;">👤 Datos Personales</h4>
 
-    <!-- Dirección -->
-    <label>📍 Dirección</label>
-    <input name="direccion">
+    <div style="margin-bottom: 20px;">
+        <label style="font-weight: 700; display: block; margin-bottom: 8px;">Nombre completo</label>
+        <input name="nombre" placeholder="Ej: Juan Carlos Pérez" required style="width: 100%; padding: 12px; border-radius: 12px; border: 1.5px solid #cbd5e1; box-sizing: border-box;">
+    </div>
 
-    <!-- Teléfono e Invitado -->
-    <div class="form-grid">
-        <div>
-            <label>📞 Teléfono</label>
-            <input name="telefono">
+    <div style="margin-bottom: 20px;">
+        <label style="font-weight: 700; display: block; margin-bottom: 8px;">📍 Dirección de residencia</label>
+        <input name="direccion" placeholder="Calle, sector y ciudad..." style="width: 100%; padding: 12px; border-radius: 12px; border: 1.5px solid #cbd5e1; box-sizing: border-box;">
+    </div>
+
+    <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px;">
+        <div class="form-group">
+            <label style="font-weight: 700; display: block; margin-bottom: 8px;">📞 Teléfono / WhatsApp</label>
+            <input name="telefono" type="tel" placeholder="000-000-0000" style="width: 100%; padding: 12px; border-radius: 12px; border: 1.5px solid #cbd5e1; box-sizing: border-box;">
         </div>
 
-        <div>
-            <label>🤝 Invitado por</label>
-            <input name="invitado_por">
+        <div class="form-group">
+            <label style="font-weight: 700; display: block; margin-bottom: 8px;">🤝 Invitado por</label>
+            <input name="invitado_por" placeholder="Nombre del hermano" style="width: 100%; padding: 12px; border-radius: 12px; border: 1.5px solid #cbd5e1; box-sizing: border-box;">
         </div>
     </div>
 
-    <!-- Sexo y Edad -->
-    <div class="form-grid">
-        <div>
-            <label>🚻 Sexo</label>
-            <select name="sexo">
+    <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px;">
+        <div class="form-group">
+            <label style="font-weight: 700; display: block; margin-bottom: 8px;">🚻 Sexo</label>
+            <select name="sexo" style="width: 100%; padding: 12px; border-radius: 12px; border: 1.5px solid #cbd5e1; background-color: white;">
                 <option>Masculino</option>
                 <option>Femenino</option>
             </select>
         </div>
 
-        <div>
-            <label>🎂 Rango de edad</label>
-            <select name="rango_edad">
+        <div class="form-group">
+            <label style="font-weight: 700; display: block; margin-bottom: 8px;">🎂 Rango de edad</label>
+            <select name="rango_edad" style="width: 100%; padding: 12px; border-radius: 12px; border: 1.5px solid #cbd5e1; background-color: white;">
                 <option>0–5 años</option>
                 <option>6–10 años</option>
                 <option>11–17 años</option>
@@ -73,19 +79,34 @@
         </div>
     </div>
 
-    <!-- Visita -->
-    <label>🏠 ¿Necesita visita a su casa?</label>
-    <select name="visita_casa">
-        <option>Sí</option>
-        <option>No</option>
-    </select>
+    <div style="margin-bottom: 30px; background: #f0fdf4; padding: 15px; border-radius: 12px; border: 1px dashed #22c55e;">
+        <label style="font-weight: 700; display: block; margin-bottom: 8px; color: #166534;">🏠 ¿Desea recibir una visita en su hogar?</label>
+        <select name="visita_casa" style="width: 100%; padding: 12px; border-radius: 12px; border: 1.5px solid #22c55e; background-color: white; font-weight: 600;">
+            <option>Sí</option>
+            <option>No</option>
+        </select>
+    </div>
 
-    <!-- Botones -->
-    <div class="form-botones">
-        <button type="submit">💾 Guardar visita</button>
-        <a href="/visitas" class="btn-secundario">📋 Ver visitas</a>
+    <div class="form-botones" style="display: flex; gap: 15px; align-items: center;">
+        <button type="submit" style="flex: 2; padding: 16px; background: var(--primary-gradient); color: white; border: none; border-radius: 15px; font-weight: 700; font-size: 16px; cursor: pointer; box-shadow: 0 4px 15px rgba(74, 108, 247, 0.3);">
+            💾 Registrar Visitante
+        </button>
+        
+        {% if session.get("logueado") %}
+        <a href="/visitas" class="btn-secundario" style="flex: 1; text-align: center; padding: 16px; background: #f1f5f9; color: #475569; text-decoration: none; border-radius: 15px; font-weight: 600; font-size: 14px;">
+            📋 Ver Listado
+        </a>
+        {% endif %}
     </div>
 
 </form>
+
+<style>
+    @media (max-width: 768px) {
+        .form-grid { grid-template-columns: 1fr !important; }
+        .form-botones { flex-direction: column; }
+        button { width: 100%; }
+    }
+</style>
 
 {% endblock %}

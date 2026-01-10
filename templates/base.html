@@ -3,173 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <title>Iglesia Conectada | Gestión de Visitas</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
     <style>
         :root {
             --primary-gradient: linear-gradient(135deg, #4a6cf7, #3a5ad9);
             --success-color: #22c55e;
+            --danger-color: #ef4444;
         }
 
         body {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             font-family: 'Inter', sans-serif;
             background: #f4f6f8;
+            -webkit-tap-highlight-color: transparent; /* Optimización móvil */
         }
 
-        /* ⛪ Topbar Rediseñada */
+        /* ⛪ Topbar Optimizada */
         .topbar {
             background: var(--primary-gradient);
             color: white;
-            padding: 12px 24px;
+            padding: 12px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-radius: 0 0 20px 20px; /* Bordes redondeados solo abajo */
-            margin: 0 auto 25px auto;
+            border-radius: 0 0 20px 20px;
+            margin: 0 auto 15px auto;
             max-width: 1100px;
-            box-shadow: 0 8px 20px rgba(58, 90, 217, 0.2);
+            box-shadow: 0 8px 20px rgba(58, 90, 217, 0.15);
             position: sticky;
             top: 0;
             z-index: 1000;
         }
 
         .topbar .logo {
-            font-weight: 700;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            letter-spacing: -0.5px;
+            font-weight: 700; font-size: 17px;
+            display: flex; align-items: center; gap: 8px;
         }
 
-        .topbar .menu {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        .topbar .menu { display: flex; align-items: center; gap: 10px; }
 
         .topbar .menu a {
-            color: white;
-            text-decoration: none;
-            font-size: 13px;
-            padding: 8px 16px;
-            border-radius: 12px;
-            background: rgba(255,255,255,0.12);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: white; text-decoration: none; font-size: 13px;
+            padding: 8px 14px; border-radius: 12px;
+            background: rgba(255,255,255,0.15);
+            transition: all 0.2s ease;
             font-weight: 600;
-            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .topbar .menu a:hover {
-            background: rgba(255,255,255,1);
-            color: #3a5ad9;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
+        .topbar .menu a:hover { background: rgba(255,255,255,0.25); }
 
-        /* 🟢 VALOR AGREGADO: Status de Usuario (Estilo Messenger/SaaS) */
+        /* 🟢 Status de Usuario */
         .usuario-badge {
-            background: rgba(0,0,0,0.2);
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border: 1px solid rgba(255,255,255,0.2);
-            color: #e2e8f0;
+            background: rgba(0,0,0,0.15);
+            padding: 6px 12px; border-radius: 30px;
+            font-size: 11px; font-weight: 600;
+            display: flex; align-items: center; gap: 6px;
+            color: #fff;
         }
 
         .status-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--success-color);
-            border-radius: 50%;
-            position: relative;
+            width: 7px; height: 7px; background: var(--success-color);
+            border-radius: 50%; position: relative;
         }
-
         .status-dot::after {
-            content: "";
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: var(--success-color);
-            border-radius: 50%;
+            content: ""; position: absolute; width: 100%; height: 100%;
+            background: var(--success-color); border-radius: 50%;
             animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
             0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(2.5); opacity: 0; }
+            100% { transform: scale(2.8); opacity: 0; }
         }
 
-        .contenedor {
-            max-width: 1100px;
-            margin: auto;
-            padding: 0 15px 50px 15px;
+        /* 🔔 VALOR AGREGADO: Mensajes Flash */
+        .flash-messages {
+            max-width: 1100px; margin: 10px auto; padding: 0 15px;
+        }
+        .flash {
+            padding: 12px 20px; border-radius: 12px; margin-bottom: 10px;
+            font-size: 14px; font-weight: 500;
+            animation: slideIn 0.3s ease-out;
+            border-left: 5px solid;
+        }
+        .flash.success { background: #dcfce7; color: #166534; border-color: #22c55e; }
+        .flash.error { background: #fee2e2; color: #991b1b; border-color: #ef4444; }
+
+        @keyframes slideIn {
+            from { transform: translateX(20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
-        /* Mobile Optimization */
+        .contenedor { max-width: 1100px; margin: auto; padding: 0 15px 40px 15px; }
+
         @media (max-width: 768px) {
-            .topbar {
-                flex-direction: column;
-                border-radius: 0;
-                padding: 15px;
-                gap: 15px;
-            }
-            .topbar .menu {
-                width: 100%;
-                justify-content: center;
-            }
-            .usuario-badge { order: -1; margin-bottom: 5px; }
+            .topbar { padding: 15px; border-radius: 0; }
+            .topbar .menu a { padding: 8px 10px; font-size: 12px; }
+            .usuario-badge { display: none; } /* Ocultar en móvil para ahorrar espacio */
         }
     </style>
 </head>
 <body>
 
 <div class="topbar">
-    <div class="logo">
-        <span style="font-size: 24px;">⛪</span> 
-        <span>SISTEMA DE VISITAS</span>
+    <div class="logo" onclick="window.location.href='/visitas'" style="cursor:pointer">
+        <span>⛪</span> <span>GESTIÓN PASTORAL</span>
     </div>
 
     <div class="menu">
         {% if session.get("logueado") %}
             <div class="usuario-badge">
                 <div class="status-dot"></div>
-                {{ session.get("nombre") }} 
-                <span style="font-weight: 400; opacity: 0.7;">| {{ session.get("usuario") | capitalize }}</span>
+                {{ session.get("nombre") }}
             </div>
-            
             <a href="/visitas">📋 Listado</a>
-            <a href="/logout" style="background: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.3);">🔒 Salir</a>
+            <a href="/logout" style="background: rgba(239, 68, 68, 0.2);">🔒 Salir</a>
         {% else %}
-            <a href="/">📝 Nuevo Registro</a>
-            <a href="/login">🔐 Acceso Staff</a>
+            <a href="/">📝 Registro</a>
+            <a href="/login">🔐 Entrar</a>
         {% endif %}
     </div>
 </div>
 
-<div class="contenedor" style="animation: fadeIn 0.5s ease-in-out;">
+<div class="flash-messages">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+</div>
+
+<div class="contenedor" style="animation: fadeIn 0.4s ease-out;">
     {% block contenido %}{% endblock %}
 </div>
 
-<footer style="text-align: center; padding: 20px; color: #94a3b8; font-size: 12px;">
-    &copy; {{ ahora.year }} Sistema de Gestión Pastoral - Iglesia Local
+<footer style="text-align: center; padding: 30px; color: #94a3b8; font-size: 11px; letter-spacing: 0.5px;">
+    &copy; {{ ahora.year }} • IGLESIA LOCAL • DESARROLLADO PARA GESTIÓN DE ALMAS
 </footer>
 
 <style>
     @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
+        from { opacity: 0; transform: translateY(8px); }
         to { opacity: 1; transform: translateY(0); }
     }
 </style>

@@ -1,110 +1,118 @@
 {% extends "base.html" %}
 {% block contenido %}
 
-<h1 class="titulo-visitas">📋 Gestión de Seguimiento</h1>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h1 class="titulo-visitas" style="margin: 0;">📋 Panel de Seguimiento</h1>
+    <div style="font-size: 12px; color: #64748b; background: white; padding: 5px 12px; border-radius: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+        📅 Hoy: {{ ahora.strftime('%d/%m/%Y') }}
+    </div>
+</div>
 
 {% if session.get("expirada") %}
-<div class="alerta alerta-roja">
+<div class="alerta alerta-roja" style="border-radius: 12px; animation: shake 0.5s ease;">
     ⏱️ Tu sesión expiró por inactividad. Por seguridad, inicia sesión nuevamente.
 </div>
 {% endif %}
 
-<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:15px; margin-bottom:25px;">
-    <div class="tarjeta-perfil" style="text-align:center; border-top: 4px solid #3b82f6;">
-        <div style="font-size:24px; font-weight:bold;">{{ total }}</div>
-        <div style="font-size:12px; color:#666; text-transform:uppercase;">Registros en período</div>
+<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:15px; margin-bottom:25px;">
+    <div class="tarjeta-perfil stat-card" style="border-top: 4px solid #3b82f6; transition: transform 0.2s;">
+        <div style="font-size:28px; font-weight:800; color: #1e3a8a;">{{ total }}</div>
+        <div style="font-size:11px; color:#64748b; text-transform:uppercase; font-weight: 700; letter-spacing: 0.5px;">Registros Totales</div>
     </div>
-    <div class="tarjeta-perfil" style="text-align:center; border-top: 4px solid #22c55e;">
-        <div style="font-size:24px; font-weight:bold; color:#16a34a;">{{ visitados }}</div>
-        <div style="font-size:12px; color:#666; text-transform:uppercase;">Personas Visitadas</div>
+    <div class="tarjeta-perfil stat-card" style="border-top: 4px solid #22c55e; transition: transform 0.2s;">
+        <div style="font-size:28px; font-weight:800; color:#16a34a;">{{ visitados }}</div>
+        <div style="font-size:11px; color:#64748b; text-transform:uppercase; font-weight: 700; letter-spacing: 0.5px;">Seguimientos Listos</div>
     </div>
-    <div class="tarjeta-perfil" style="text-align:center; border-top: 4px solid #f59e0b;">
-        <div style="font-size:24px; font-weight:bold; color:#d97706;">{{ pendientes }}</div>
-        <div style="font-size:12px; color:#666; text-transform:uppercase;">Pendientes de Visita</div>
+    <div class="tarjeta-perfil stat-card" style="border-top: 4px solid #f59e0b; transition: transform 0.2s;">
+        <div style="font-size:28px; font-weight:800; color:#d97706;">{{ pendientes }}</div>
+        <div style="font-size:11px; color:#64748b; text-transform:uppercase; font-weight: 700; letter-spacing: 0.5px;">Pendientes por Visitar</div>
     </div>
 </div>
 
-<form method="get" class="filtros filtros-card">
-    <div class="filtro-grupo">
-        <label>Fecha Inicial</label>
-        <input type="date" name="desde" value="{{ desde }}">
-    </div>
+<form method="get" class="filtros-card" style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); margin-bottom: 25px;">
+    <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end;">
+        <div class="filtro-grupo" style="flex: 1; min-width: 150px;">
+            <label style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 5px; display: block;">Desde</label>
+            <input type="date" name="desde" value="{{ desde }}" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px;">
+        </div>
 
-    <div class="filtro-grupo">
-        <label>Fecha Final</label>
-        <input type="date" name="hasta" value="{{ hasta }}">
-    </div>
+        <div class="filtro-grupo" style="flex: 1; min-width: 150px;">
+            <label style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 5px; display: block;">Hasta</label>
+            <input type="date" name="hasta" value="{{ hasta }}" style="width: 100%; border: 1px solid #cbd5e1; border-radius: 8px; padding: 8px;">
+        </div>
 
-    <div class="filtro-grupo filtro-boton">
-        <button type="submit">🔍 Filtrar Datos</button>
-        {% if desde or hasta %}
-            <a href="/visitas" class="link-limpiar">Limpiar Filtros</a>
-        {% endif %}
+        <div class="filtro-grupo" style="flex: 1; min-width: 200px; display: flex; gap: 10px;">
+            <button type="submit" style="background: #334155; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; flex: 2;">🔍 Filtrar</button>
+            {% if desde or hasta %}
+                <a href="/visitas" class="link-limpiar" style="display: flex; align-items: center; justify-content: center; background: #fee2e2; color: #b91c1c; padding: 10px; border-radius: 8px; flex: 1; text-align: center; font-weight: bold;">🧹</a>
+            {% endif %}
+        </div>
     </div>
 </form>
 
-<div class="acciones acciones-fijas">
-    <button id="btnImprimir" class="btn-accion" title="Filtre un rango de fechas para imprimir" {{ 'disabled' if not (desde and hasta) }}>
-        🖨️ Reporte PDF
+<div class="acciones acciones-fijas" style="background: #f8fafc; padding: 10px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 15px;">
+    <button id="btnImprimir" class="btn-accion-new" {{ 'disabled' if not (desde and hasta) }}>
+        🖨️ PDF
     </button>
-    <button id="btnEditar" class="btn-accion" disabled>✏️ Editar</button>
-    <button id="btnEliminar" class="btn-accion" disabled>🗑️ Eliminar</button>
+    <div style="display: flex; gap: 8px;">
+        <button id="btnEditar" class="btn-accion-new btn-edit" disabled>✏️ Editar</button>
+        <button id="btnEliminar" class="btn-accion-new btn-delete" disabled>🗑️ Eliminar</button>
+    </div>
 </div>
 
-<div class="tabla-contenedor">
+<div class="tabla-contenedor" style="background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
 <table id="tablaVisitas">
     <thead>
-        <tr>
-            <th>Fecha Registro</th>
-            <th>Nombre Completo</th>
-            <th>Invitado por</th>
-            <th>Estado</th>
-            <th>Esfuerzo Visita</th>
+        <tr style="background: #f8fafc;">
+            <th>📅 Registro</th>
+            <th>👤 Visitante</th>
+            <th>🤝 Invitado</th>
+            <th>📍 Estado</th>
+            <th>📋 Seguimientos</th>
         </tr>
     </thead>
 
     <tbody>
     {% for r in visitas %}
-        <tr data-id="{{ r['id'] }}" onclick="seleccionarFila(this)">
-            
-            <td class="col-fecha">
+        <tr data-id="{{ r['id'] }}" onclick="seleccionarFila(this)" style="cursor: pointer; border-bottom: 1px solid #f1f5f9;">
+            <td class="col-fecha" style="font-size: 0.9em; color: #64748b;">
                 {{ r['fecha'] | formato_fecha }}
             </td>
 
             <td class="col-nombre">
-                <a href="/perfil/{{ r['id'] }}" onclick="event.stopPropagation()">
-                    <strong>{{ r['nombre'] }}</strong>
+                <a href="/perfil/{{ r['id'] }}" onclick="event.stopPropagation()" style="color: #2563eb; text-decoration: none; font-weight: 600;">
+                    {{ r['nombre'] }}
                 </a>
             </td>
 
-            <td class="col-invitado">{{ r['invitado_por'] or "Espontáneo" }}</td>
+            <td class="col-invitado" style="font-size: 0.9em; color: #475569;">{{ r['invitado_por'] or "Espontáneo" }}</td>
 
             <td class="col-estado">
                 {% if r['visitado'] == 'Si' %}
-                    <span class="badge ok">✔ COMPLETADO</span>
+                    <span class="badge ok" style="background: #dcfce7; color: #166534; border: none; padding: 5px 10px;">✔ LISTO</span>
                 {% else %}
-                    <span class="badge no">⏳ PENDIENTE</span><br>
-                    <a href="/visitar/{{ r['id'] }}" class="link-marcar" onclick="event.stopPropagation()">
-                        Realizar Visita
-                    </a>
+                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                        <span class="badge no" style="background: #fee2e2; color: #991b1b; border: none; padding: 5px 10px;">⏳ PENDIENTE</span>
+                        <a href="/visitar/{{ r['id'] }}" class="link-marcar" onclick="event.stopPropagation()">Registrar Visita</a>
+                    </div>
                 {% endif %}
             </td>
 
             <td class="col-detalle">
-                <a href="/visitar/{{ r['id'] }}" class="btn-historial" onclick="event.stopPropagation()">
+                <a href="/visitar/{{ r['id'] }}" class="btn-historial-new" onclick="event.stopPropagation()">
                     {% if r['total_visitas'] > 0 %}
-                        📄 {{ r['total_visitas'] }} seguimiento(s)
+                        <span class="count-pill">{{ r['total_visitas'] }}</span> Reportes
                     {% else %}
-                        <span style="color:#999;">Sin visitas</span>
+                        <span style="color:#cbd5e1;">—</span>
                     {% endif %}
                 </a>
             </td>
-
         </tr>
     {% else %}
         <tr>
-            <td colspan="5" class="vacio">
-                No se encontraron registros para los filtros seleccionados.
+            <td colspan="5" class="vacio" style="padding: 50px; text-align: center; color: #94a3b8;">
+                <div style="font-size: 30px;">🔎</div>
+                No se encontraron registros en estas fechas.
             </td>
         </tr>
     {% endfor %}
@@ -112,55 +120,83 @@
 </table>
 </div>
 
-<a href="/" class="btn-volver">← Registrar Nueva Persona</a>
+<div style="margin-top: 25px; text-align: center;">
+    <a href="/" class="btn-volver" style="background: white; border: 1.5px solid #cbd5e1; padding: 12px 25px; border-radius: 12px; display: inline-block;">
+        ➕ Registrar Nueva Persona
+    </a>
+</div>
 
 <script>
 let idSeleccionado = null;
 
 function seleccionarFila(fila) {
-    // Limpiar selección previa
     document.querySelectorAll("#tablaVisitas tbody tr").forEach(tr => {
         tr.classList.remove("fila-activa");
     });
 
-    // Marcar nueva selección
     fila.classList.add("fila-activa");
     idSeleccionado = fila.dataset.id;
 
-    // Habilitar botones de acción
     document.getElementById("btnEditar").disabled = false;
     document.getElementById("btnEliminar").disabled = false;
+    
+    // Efecto visual táctil
+    fila.style.transform = "scale(0.99)";
+    setTimeout(() => fila.style.transform = "scale(1)", 100);
 }
 
-// Lógica de navegación
 document.getElementById("btnEditar").onclick = function () {
     if (idSeleccionado) window.location.href = "/editar/" + idSeleccionado;
 };
 
 document.getElementById("btnEliminar").onclick = function () {
-    if (idSeleccionado && confirm("¿Está seguro de eliminar este registro? Esto borrará también su historial de visitas.")) {
+    if (idSeleccionado && confirm("¿Eliminar registro y todo su historial de seguimiento?")) {
         window.location.href = "/eliminar/" + idSeleccionado;
     }
 };
 
-// Imprimir reporte filtrado
 document.getElementById("btnImprimir").onclick = function () {
     const d = "{{ desde }}";
     const h = "{{ hasta }}";
-    if (d && h) {
-        window.open(`/imprimir?desde=${d}&hasta=${h}`, "_blank");
-    }
+    if (d && h) { window.open(`/imprimir?desde=${d}&hasta=${h}`, "_blank"); }
 };
 </script>
 
 <style>
-    /* Valor agregado: Estilos para mejorar la experiencia de usuario */
-    .fila-activa { background-color: #e0f2fe !important; border-left: 4px solid #0284c7; }
-    .btn-accion:disabled { opacity: 0.5; cursor: not-allowed; }
-    .link-limpiar { color: #ef4444; font-size: 0.8em; margin-left: 10px; text-decoration: none; }
-    .link-marcar { font-size: 0.85em; color: #2563eb; font-weight: bold; }
-    .btn-historial { text-decoration: none; color: #4b5563; font-size: 0.9em; }
-    .btn-historial:hover { color: #000; }
+    .fila-activa { background-color: #f0f7ff !important; border-left: 5px solid #3b82f6 !important; }
+    
+    .btn-accion-new {
+        padding: 8px 16px; border-radius: 8px; border: 1px solid #cbd5e1;
+        background: white; font-weight: 600; font-size: 13px; cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .btn-accion-new:hover:not(:disabled) { background: #f1f5f9; border-color: #94a3b8; }
+    .btn-accion-new:disabled { opacity: 0.4; cursor: not-allowed; }
+    
+    .btn-edit:hover:not(:disabled) { color: #2563eb; border-color: #2563eb; }
+    .btn-delete:hover:not(:disabled) { color: #dc2626; border-color: #dc2626; }
+    
+    .count-pill {
+        background: #3b82f6; color: white; padding: 2px 8px; 
+        border-radius: 10px; font-size: 11px; font-weight: bold;
+    }
+    
+    .btn-historial-new { text-decoration: none; color: #475569; font-weight: 500; font-size: 13px; }
+    
+    @keyframes shake {
+        0%, 100% {transform: translateX(0);}
+        25% {transform: translateX(-5px);}
+        75% {transform: translateX(5px);}
+    }
+
+    .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+    
+    @media (max-width: 768px) {
+        .acciones-fijas { flex-direction: column; gap: 10px; }
+        .acciones-fijas div { width: 100%; }
+        .btn-accion-new { flex: 1; }
+    }
 </style>
 
 {% endblock %}

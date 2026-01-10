@@ -1,38 +1,99 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-<meta charset="utf-8">
-<title>Reporte de Visitas</title>
-<style>
-body { font-family: Arial; }
-table { width: 100%; border-collapse: collapse; }
-th, td { border: 1px solid #000; padding: 6px; }
-</style>
+    <meta charset="utf-8">
+    <title>Reporte_Visitas_{{ desde }}_{{ hasta }}</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            color: #333; 
+            margin: 20px;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #3a5ad9;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+        }
+        .header h1 { margin: 0; font-size: 22px; color: #1e40af; }
+        .header p { margin: 5px 0; font-size: 14px; color: #64748b; }
+
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 10px;
+        }
+        th { 
+            background-color: #f1f5f9 !important; 
+            color: #1e40af;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+        th, td { 
+            border: 1px solid #cbd5e1; 
+            padding: 10px; 
+            text-align: left; 
+            font-size: 13px;
+        }
+        tr:nth-child(even) { background-color: #f8fafc; }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .si { color: #15803d; border: 1px solid #15803d; }
+        .no { color: #b91c1c; border: 1px solid #b91c1c; }
+
+        @media print {
+            @page { margin: 1cm; }
+            body { margin: 0; }
+            .no-print { display: none; }
+            th { background-color: #f1f5f9 !important; -webkit-print-color-adjust: exact; }
+            .si, .no { border: 1px solid #000; }
+        }
+    </style>
 </head>
 
 <body onload="window.print()">
 
-<h3>Reporte de Visitas a la Iglesia</h3>
-<p>Desde {{ desde }} hasta {{ hasta }}</p>
+    <div class="header">
+        <h1>⛪ REPORTE DE GESTIÓN PASTORAL</h1>
+        <p>Control de Visitantes y Seguimiento</p>
+        <p><strong>Período:</strong> {{ desde | formato_fecha }} al {{ hasta | formato_fecha }}</p>
+    </div>
 
-<table>
-<tr>
-    <th>Fecha</th>
-    <th>Nombre</th>
-    <th>Invitado por</th>
-    <th>Visitado</th>
-</tr>
+    <table>
+        <thead>
+            <tr>
+                <th>Fecha Reg.</th>
+                <th>Nombre del Visitante</th>
+                <th>Invitado por</th>
+                <th style="text-align: center;">¿Fue Visitado?</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for v in visitas %}
+            <tr>
+                <td style="white-space: nowrap;">{{ v.fecha | formato_fecha }}</td>
+                <td><strong>{{ v.nombre }}</strong></td>
+                <td>{{ v.invitado_por or '—' }}</td>
+                <td style="text-align: center;">
+                    {% if v.visitado == 'Si' %}
+                        <span class="badge si">SÍ</span>
+                    {% else %}
+                        <span class="badge no">PENDIENTE</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-{% for v in visitas %}
-<tr>
-    <td>{{ v.fecha }}</td>
-    <td>{{ v.nombre }}</td>
-    <td>{{ v.invitado_por }}</td>
-    <td>{{ v.visitado }}</td>
-</tr>
-{% endfor %}
-
-</table>
+    <div style="margin-top: 30px; font-size: 10px; color: #94a3b8; text-align: right;">
+        Generado el: {{ ahora.strftime('%d/%m/%Y %H:%M') }}
+    </div>
 
 </body>
 </html>
