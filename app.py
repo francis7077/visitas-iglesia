@@ -147,28 +147,53 @@ def registro():
 def visitas():
     desde = request.args.get("desde")
     hasta = request.args.get("hasta")
+
     query = """
         SELECT v.*, COUNT(d.id) AS total_visitas 
-        FROM visitas v LEFT JOIN detalle_visita d ON v.id = d.visita_id 
+        FROM visitas v
+        LEFT JOIN detalle_visita d ON v.id = d.visita_id
         WHERE 1=1
     """
     params = []
+
     if desde:
-        query += " AND v.fecha >= %s"; params.append(desde)
+        query += " AND v.fecha >= %s"
+        params.append(desde)
+
     if hasta:
-        query += " AND v.fecha <= %s"; params.append(hasta)
-    
+        query += " AND v.fecha <= %s"
+        params.append(hasta)
+
     query += " GROUP BY v.id ORDER BY v.fecha DESC"
+
     conn = conectar()
     c = conn.cursor()
     c.execute(query, params)
     visitas_lista = c.fetchall()
-    
+
+    # 🔥 LÓGICA REAL: el estado depende del historial
+    for r in visitas_lista:
+        if r["total_visitas"] > 0:
+            r["visitado"] = "Si"
+        else:
+            r["visitado"] = "No"
+
     total = len(visitas_lista)
-    visitados = sum(1 for r in visitas_lista if r['visitado'] == 'Si')
+    visitados = sum(1 for r in visitas_lista if r["visitado"] == "Si")
+    pendientes = total - visitados
+
     conn.close()
-    return render_template("visitas.html", visitas=visitas_lista, desde=desde, hasta=hasta,
-                           total=total, visitados=visitados, pendientes=total-visitados)
+
+    return render_template(
+        "visitas.html",
+        visitas=visitas_lista,
+        desde=desde,
+        hasta=hasta,
+        total=total,
+        visitados=visitados,
+        pendientes=pendientes
+    )
+
 
 # ---------- GESTIÓN DE PERSONA (VISITANTE) ----------
 @app.route("/perfil/<int:id>")
