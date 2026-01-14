@@ -1,9 +1,15 @@
 {% extends "base.html" %}
 {% block contenido %}
 
-<div class="tarjeta-perfil" style="text-align: center; border-bottom: 5px solid #4a6cf7; margin-bottom: 30px;">
-    <h2 style="margin: 0; color: #1e40af;">📝 Registro de Invitados</h2>
-    <p style="color: #64748b; margin-top: 10px;">"Porque tuve hambre, y me disteis de comer; tuve sed, y me disteis de beber; fui forastero, y me recogisteis." - <b>Mateo 25:35</b></p>
+<div class="tarjeta-perfil bienvenida-divina">
+    <h2 class="titulo-bienvenida">
+        ✨ Bienvenido a la Casa de Dios ✨
+    </h2>
+
+    <p class="versiculo">
+        "Porque tuve hambre, y me disteis de comer; tuve sed, y me disteis de beber; fui forastero, y me recogisteis."  
+        <br><b>Mateo 25:35</b>
+    </p>
 </div>
 
 <form method="post" class="form-card" style="background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
@@ -102,11 +108,50 @@
 </form>
 
 <style>
-    @media (max-width: 768px) {
-        .form-grid { grid-template-columns: 1fr !important; }
-        .form-botones { flex-direction: column; }
-        button { width: 100%; }
-    }
+.bienvenida-divina {
+    text-align: center;
+    border-bottom: 5px solid #4a6cf7;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    animation: bajar 1.2s ease-out;
+}
+
+.titulo-bienvenida {
+    margin: 0;
+    color: #1e40af;
+    font-size: 32px;
+    font-weight: 800;
+    text-shadow: 0 0 15px rgba(74,108,247,0.4);
+    animation: brillo 3s infinite alternate;
+}
+
+.versiculo {
+    color: #64748b;
+    margin-top: 15px;
+    font-style: italic;
+    animation: aparecer 2s ease-in;
+}
+
+@keyframes bajar {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes aparecer {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes brillo {
+    from { text-shadow: 0 0 8px rgba(74,108,247,0.3); }
+    to { text-shadow: 0 0 25px rgba(74,108,247,0.8); }
+}
+
+@media (max-width: 768px) {
+    .form-grid { grid-template-columns: 1fr !important; }
+    .form-botones { flex-direction: column; }
+    button { width: 100%; }
+}
 </style>
 
 {% endblock %}
