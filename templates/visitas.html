@@ -52,13 +52,16 @@
     </div>
 </form>
 
-<div class="acciones acciones-fijas">
-    <button id="btnImprimir" class="btn-accion-new" {{ 'disabled' if not (desde and hasta) }}>
-        🖨️ PDF
-    </button>
-    <div>
-        <button id="btnEditar" class="btn-accion-new btn-edit" disabled>✏️ Editar</button>
-        <button id="btnEliminar" class="btn-accion-new btn-delete" disabled>🗑️ Eliminar</button>
+<div class="toolbar-acciones">
+        <button id="btnImprimir" class="btn-mini-accion" {{ 'disabled' if not (desde and hasta) }}>
+            🖨️ PDF
+        </button>
+        <button id="btnEditar" class="btn-mini-accion btn-edit" disabled>
+            ✏️ Editar
+        </button>
+        <button id="btnEliminar" class="btn-mini-accion btn-delete" disabled>
+            🗑️ Eliminar
+        </button>
     </div>
 </div>
 
