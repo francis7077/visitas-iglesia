@@ -1,71 +1,101 @@
 /* ===== 1. BASE Y RESET ===== */
 * { box-sizing: border-box; font-family: "Inter", "Segoe UI", Arial, sans-serif; }
-body { margin: 0; padding: 20px; background: #f8fafc; color: #1e293b; line-height: 1.5; }
+body { margin: 0; padding: 20px; background: #f0f4f8; color: #1e293b; line-height: 1.5; }
 
-/* ===== 2. MICRO-STATS (Optimizado para móvil) ===== */
+/* ===== 2. MICRO-STATS (Tarjetas Estilo Imagen 2) ===== */
 .stats-mini-container { 
     display: grid; 
-    grid-template-columns: repeat(3, 1fr); 
-    gap: 12px; 
-    margin-bottom: 24px; 
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 
+    gap: 16px; 
+    margin-bottom: 30px; 
 }
 .mini-stat {
-    background: white; padding: 12px; border-radius: 16px; text-align: center;
-    border: 1px solid #e2e8f0; border-top-width: 4px;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    background: white; padding: 20px 10px; border-radius: 20px; text-align: center;
+    border: 1px solid #e2e8f0; border-top-width: 5px;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
 }
-.mini-stat.azul { border-top-color: #2563eb; }
+.mini-stat:hover { transform: translateY(-5px); }
+.mini-stat.azul { border-top-color: #3b82f6; }
 .mini-stat.verde { border-top-color: #10b981; }
 .mini-stat.naranja { border-top-color: #f59e0b; }
-.mini-value { display: block; font-size: 1.5rem; font-weight: 800; color: #0f172a; }
-.mini-text { font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase; }
+.mini-value { display: block; font-size: 2rem; font-weight: 800; color: #1e293b; margin-bottom: 5px; }
+.mini-text { font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
 
-/* ===== 3. BOTONES Y ACCIONES ===== */
+/* ===== 3. TOOLBAR Y BOTONES DE ACCIÓN (Estilo Imagen 3) ===== */
 .toolbar-acciones { 
-    display: flex; 
-    gap: 10px; 
-    margin-bottom: 20px; 
-    flex-wrap: wrap; 
+    display: flex; gap: 12px; margin-bottom: 25px; flex-wrap: wrap; 
 }
 .btn-mini-accion {
-    padding: 10px 16px; border-radius: 10px; border: none;
-    font-weight: 600; font-size: 13px; cursor: pointer; color: white;
-    background: #2563eb; transition: all 0.2s;
+    padding: 10px 20px; border-radius: 12px; border: none;
+    font-weight: 700; font-size: 14px; cursor: pointer; color: white;
+    background: #3b82f6; display: flex; align-items: center; gap: 8px;
+    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
+    transition: all 0.3s ease;
 }
-.btn-edit { background: #36b9cc; }
-.btn-delete { background: #e74a3b; }
-.btn-mini-accion:disabled { background: #cbd5e1; opacity: 0.6; cursor: not-allowed; }
+.btn-mini-accion:hover:not(:disabled) { background: #2563eb; transform: scale(1.05); }
+.btn-edit { background: #3b82f6; }
+.btn-delete { background: #3b82f6; } /* Color azul sólido como en tu imagen principal */
+.btn-mini-accion:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; }
 
-/* ===== 4. TABLA CON COLUMNA AJUSTADA ===== */
+/* ===== 4. TABLA PROFESIONAL (Estilo Imagen 3 y 4) ===== */
 .tabla-contenedor { 
-    width: 100%; overflow-x: auto; border-radius: 16px; 
+    width: 100%; overflow-x: auto; border-radius: 20px; 
     border: 1px solid #e2e8f0; background: white; 
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
 }
 table { width: 100%; border-collapse: collapse; }
-th { background: #f1f5f9; padding: 12px; font-size: 0.75rem; color: #64748b; text-align: left; }
-td { padding: 12px; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+th { background: #f8fafc; padding: 16px; font-size: 0.8rem; color: #64748b; text-align: left; border-bottom: 2px solid #f1f5f9; text-transform: uppercase; }
+td { padding: 16px; border-bottom: 1px solid #f1f5f9; font-size: 15px; color: #334155; }
+tr:hover { background-color: #f9fbff; }
 
-/* EL TRUCO DE LA COLUMNA SEGUIMIENTO */
-.col-seguimiento-ajustada { width: 1%; white-space: nowrap; }
+/* ESTADOS (Badges Imagen 3) */
+.badge-estado {
+    padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; gap: 5px;
+}
+.badge-estado.visitado { background: #dcfce7; color: #166534; }
+.badge-estado.pendiente { background: #fee2e2; color: #991b1b; }
+
+/* ===== 5. BOTONES DE SEGUIMIENTO (Imagen 1) ===== */
+.col-seguimiento-ajustada { width: 1%; white-space: nowrap; padding-right: 25px; }
+
+/* Botón "Ver Reporte" */
 .diseno-btn-azul {
-    background: white; color: #2563eb; border: 1px solid #dbeafe;
-    padding: 6px 12px; border-radius: 10px; font-weight: 700; font-size: 12px;
-    display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(37,99,235,0.1);
+    background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe;
+    padding: 8px 18px; border-radius: 12px; font-weight: 700; font-size: 13px;
+    display: flex; align-items: center; gap: 10px; transition: all 0.2s;
+    text-decoration: none;
 }
-.badge-circular { background: #2563eb; color: white; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+.diseno-btn-azul:hover { background: #dbeafe; border-color: #3b82f6; }
+.badge-circular { 
+    background: #2563eb; color: white; border-radius: 50%; 
+    width: 22px; height: 22px; display: flex; 
+    align-items: center; justify-content: center; font-size: 12px; font-weight: 800;
+}
 
-/* ===== 5. BOTÓN FLOTANTE CENTRADO ===== */
-.floating-btn-container { display: flex; justify-content: center; margin: 30px 0; }
+/* Botón "Agregar Visita" */
+.diseno-btn-agregar {
+    background: white; color: #64748b; border: 1.5px dashed #cbd5e1;
+    padding: 8px 18px; border-radius: 12px; font-weight: 700; font-size: 13px;
+    display: flex; align-items: center; gap: 8px; text-decoration: none;
+    transition: all 0.2s;
+}
+.diseno-btn-agregar:hover { border-color: #8b5cf6; color: #8b5cf6; background: #f5f3ff; }
+.plus-icon { color: #8b5cf6; font-size: 18px; font-weight: bold; }
+
+/* ===== 6. BOTÓN NUEVO REGISTRO (Imagen 3 inferior) ===== */
+.floating-btn-container { margin-top: 20px; }
 .btn-add-fast {
-    background: #2563eb; color: white; padding: 14px 28px;
-    border-radius: 50px; font-weight: 700; text-decoration: none;
-    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+    color: #4f46e5; font-weight: 700; text-decoration: none;
+    display: flex; align-items: center; gap: 5px; font-size: 16px;
+    transition: color 0.2s;
 }
+.btn-add-fast:hover { color: #3730a3; }
 
-/* ===== 6. RESPONSIVE ===== */
+/* ===== 7. RESPONSIVE ===== */
 @media (max-width: 600px) {
-    .stats-mini-container { gap: 6px; }
-    .mini-value { font-size: 1.1rem; }
-    .mini-text { font-size: 0.55rem; }
+    .stats-mini-container { grid-template-columns: 1fr; }
+    .mini-stat { padding: 15px; }
     body { padding: 10px; }
+    .toolbar-acciones { justify-content: center; }
 }
