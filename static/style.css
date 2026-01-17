@@ -1,183 +1,71 @@
-/* ===== RESET & BASE ===== */
-* {
-    box-sizing: border-box;
-    font-family: "Inter", "Segoe UI", Arial, sans-serif; /* Inter es más moderna para sistemas */
-}
+/* ===== 1. BASE Y RESET ===== */
+* { box-sizing: border-box; font-family: "Inter", "Segoe UI", Arial, sans-serif; }
+body { margin: 0; padding: 20px; background: #f8fafc; color: #1e293b; line-height: 1.5; }
 
-body {
-    margin: 0;
-    padding: 20px;
-    background: #f8fafc; /* Color más limpio y profesional */
-    color: #1e293b;
-    line-height: 1.5;
+/* ===== 2. MICRO-STATS (Optimizado para móvil) ===== */
+.stats-mini-container { 
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 12px; 
+    margin-bottom: 24px; 
 }
-
-/* ===== LINKS ===== */
-a {
-    color: #2563eb;
-    text-decoration: none;
-    transition: color 0.2s;
+.mini-stat {
+    background: white; padding: 12px; border-radius: 16px; text-align: center;
+    border: 1px solid #e2e8f0; border-top-width: 4px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
 }
+.mini-stat.azul { border-top-color: #2563eb; }
+.mini-stat.verde { border-top-color: #10b981; }
+.mini-stat.naranja { border-top-color: #f59e0b; }
+.mini-value { display: block; font-size: 1.5rem; font-weight: 800; color: #0f172a; }
+.mini-text { font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase; }
 
-a:hover {
-    color: #1d4ed8;
-    text-decoration: underline;
+/* ===== 3. BOTONES Y ACCIONES ===== */
+.toolbar-acciones { 
+    display: flex; 
+    gap: 10px; 
+    margin-bottom: 20px; 
+    flex-wrap: wrap; 
 }
-
-/* ===== TITULOS ===== */
-h1, h2, h3 {
-    text-align: center;
-    color: #0f172a;
-    font-weight: 800;
-    letter-spacing: -0.025em;
+.btn-mini-accion {
+    padding: 10px 16px; border-radius: 10px; border: none;
+    font-weight: 600; font-size: 13px; cursor: pointer; color: white;
+    background: #2563eb; transition: all 0.2s;
 }
+.btn-edit { background: #36b9cc; }
+.btn-delete { background: #e74a3b; }
+.btn-mini-accion:disabled { background: #cbd5e1; opacity: 0.6; cursor: not-allowed; }
 
-/* ===== TARJETAS Y CONTENEDORES ===== */
-.tarjeta-perfil, .filtros-card, form {
-    background: white;
-    padding: 24px;
-    border-radius: 16px;
-    max-width: 850px;
-    margin: 0 auto 24px auto;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+/* ===== 4. TABLA CON COLUMNA AJUSTADA ===== */
+.tabla-contenedor { 
+    width: 100%; overflow-x: auto; border-radius: 16px; 
+    border: 1px solid #e2e8f0; background: white; 
 }
+table { width: 100%; border-collapse: collapse; }
+th { background: #f1f5f9; padding: 12px; font-size: 0.75rem; color: #64748b; text-align: left; }
+td { padding: 12px; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
 
-/* ===== FORMULARIOS E INPUTS ===== */
-label {
-    display: block;
-    margin-top: 16px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: #475569;
+/* EL TRUCO DE LA COLUMNA SEGUIMIENTO */
+.col-seguimiento-ajustada { width: 1%; white-space: nowrap; }
+.diseno-btn-azul {
+    background: white; color: #2563eb; border: 1px solid #dbeafe;
+    padding: 6px 12px; border-radius: 10px; font-weight: 700; font-size: 12px;
+    display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(37,99,235,0.1);
 }
+.badge-circular { background: #2563eb; color: white; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 10px; }
 
-input, select, textarea {
-    width: 100%;
-    padding: 10px 14px;
-    margin-top: 6px;
-    border: 1px solid #cbd5e1;
-    border-radius: 10px;
-    font-size: 14px;
-    background: #ffffff;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-input:focus, select:focus, textarea:focus {
-    outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-}
-
-/* ===== BOTONES (Valor Agregado: Gradientes dinámicos) ===== */
-button, .btn-regresar {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 24px;
-    background: #2563eb;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 600;
-    transition: all 0.2s;
-}
-
-button:hover {
-    background: #1d4ed8;
-    transform: translateY(-1px);
+/* ===== 5. BOTÓN FLOTANTE CENTRADO ===== */
+.floating-btn-container { display: flex; justify-content: center; margin: 30px 0; }
+.btn-add-fast {
+    background: #2563eb; color: white; padding: 14px 28px;
+    border-radius: 50px; font-weight: 700; text-decoration: none;
     box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
 }
 
-button:active {
-    transform: translateY(0);
-}
-
-/* ===== TABLAS (Optimización de lectura) ===== */
-.tabla-contenedor {
-    width: 100%;
-    max-width: 1000px;
-    margin: 0 auto;
-    overflow-x: auto;
-    border-radius: 12px;
-    border: 1px solid #e2e8f0;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-}
-
-th {
-    background: #f1f5f9;
-    padding: 12px 16px;
-    text-align: left;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: #64748b;
-    border-bottom: 2px solid #e2e8f0;
-}
-
-td {
-    padding: 14px 16px;
-    border-bottom: 1px solid #f1f5f9;
-    font-size: 14px;
-}
-
-tr:hover {
-    background: #f8fafc;
-}
-
-.fila-activa {
-    background: #eff6ff !important;
-    border-left: 4px solid #3b82f6;
-}
-
-/* ===== BADGES (Valor Agregado: Colores semánticos) ===== */
-.badge {
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-}
-
-.badge.ok { background: #dcfce7; color: #166534; }
-.badge.no { background: #fee2e2; color: #991b1b; }
-
-/* ===== DASHBOARD (Valor Agregado: Grid interactivo) ===== */
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-    max-width: 850px;
-    margin: 0 auto 20px auto;
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
+/* ===== 6. RESPONSIVE ===== */
+@media (max-width: 600px) {
+    .stats-mini-container { gap: 6px; }
+    .mini-value { font-size: 1.1rem; }
+    .mini-text { font-size: 0.55rem; }
     body { padding: 10px; }
-    
-    .filtros {
-        grid-template-columns: 1fr;
-    }
-    
-    .acciones-fijas {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: white;
-        padding: 15px;
-        box-shadow: 0 -10px 15px -3px rgba(0, 0, 0, 0.1);
-        display: flex;
-        justify-content: space-around;
-        z-index: 100;
-    }
-    
-    td, th { padding: 10px 8px; font-size: 12px; }
 }
