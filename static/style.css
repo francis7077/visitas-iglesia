@@ -2,7 +2,35 @@
 * { box-sizing: border-box; font-family: "Inter", "Segoe UI", Arial, sans-serif; }
 body { margin: 0; padding: 20px; background: #f0f4f8; color: #1e293b; line-height: 1.5; }
 
-/* ===== 2. MICRO-STATS (Tarjetas Estilo Imagen 2) ===== */
+/* ===== 2. DISEÑO DE APP (Login / Formularios) ===== */
+.login-container {
+    max-width: 400px;
+    margin: 100px auto;
+    background: white;
+    padding: 40px;
+    border-radius: 24px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.input-app-style {
+    width: 100%;
+    padding: 14px 20px;
+    margin: 10px 0 20px 0;
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    font-size: 16px;
+    background: #f8fafc;
+    transition: all 0.3s ease;
+}
+
+.input-app-style:focus {
+    outline: none;
+    border-color: #3b82f6;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+/* ===== 3. MICRO-STATS ===== */
 .stats-mini-container { 
     display: grid; 
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 
@@ -13,89 +41,80 @@ body { margin: 0; padding: 20px; background: #f0f4f8; color: #1e293b; line-heigh
     background: white; padding: 20px 10px; border-radius: 20px; text-align: center;
     border: 1px solid #e2e8f0; border-top-width: 5px;
     box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
-    transition: transform 0.2s;
 }
-.mini-stat:hover { transform: translateY(-5px); }
 .mini-stat.azul { border-top-color: #3b82f6; }
 .mini-stat.verde { border-top-color: #10b981; }
 .mini-stat.naranja { border-top-color: #f59e0b; }
-.mini-value { display: block; font-size: 2rem; font-weight: 800; color: #1e293b; margin-bottom: 5px; }
-.mini-text { font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
 
-/* ===== 3. TOOLBAR Y BOTONES DE ACCIÓN (Estilo Imagen 3) ===== */
-.toolbar-acciones { 
-    display: flex; gap: 12px; margin-bottom: 25px; flex-wrap: wrap; 
-}
+/* ===== 4. TOOLBAR Y BOTONES (Eliminar en Rojo) ===== */
+.toolbar-acciones { display: flex; gap: 12px; margin-bottom: 25px; flex-wrap: wrap; }
+
 .btn-mini-accion {
     padding: 10px 20px; border-radius: 12px; border: none;
     font-weight: 700; font-size: 14px; cursor: pointer; color: white;
-    background: #3b82f6; display: flex; align-items: center; gap: 8px;
-    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
+    display: flex; align-items: center; gap: 8px;
     transition: all 0.3s ease;
 }
-.btn-mini-accion:hover:not(:disabled) { background: #2563eb; transform: scale(1.05); }
-.btn-edit { background: #3b82f6; }
-.btn-delete { background: #3b82f6; } /* Color azul sólido como en tu imagen principal */
-.btn-mini-accion:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; }
 
-/* ===== 4. TABLA PROFESIONAL (Estilo Imagen 3 y 4) ===== */
+.btn-edit { 
+    background: #3b82f6; 
+    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
+}
+
+.btn-delete { 
+    background: #ef4444; /* Rojo para eliminar */
+    box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2);
+}
+
+.btn-delete:hover { background: #dc2626; transform: scale(1.05); }
+.btn-edit:hover { background: #2563eb; transform: scale(1.05); }
+
+/* ===== 5. TABLA Y BADGES ===== */
 .tabla-contenedor { 
     width: 100%; overflow-x: auto; border-radius: 20px; 
     border: 1px solid #e2e8f0; background: white; 
     box-shadow: 0 4px 20px rgba(0,0,0,0.03);
 }
 table { width: 100%; border-collapse: collapse; }
-th { background: #f8fafc; padding: 16px; font-size: 0.8rem; color: #64748b; text-align: left; border-bottom: 2px solid #f1f5f9; text-transform: uppercase; }
-td { padding: 16px; border-bottom: 1px solid #f1f5f9; font-size: 15px; color: #334155; }
-tr:hover { background-color: #f9fbff; }
+td, th { padding: 16px; text-align: left; }
 
-/* ESTADOS (Badges Imagen 3) */
-.badge-estado {
-    padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; gap: 5px;
+/* ===== 6. BOTÓN NUEVO REGISTRO (Estilo App Centrado) ===== */
+.floating-btn-container { 
+    display: flex;
+    justify-content: center; /* Centrado */
+    margin: 40px 0; 
 }
-.badge-estado.visitado { background: #dcfce7; color: #166534; }
-.badge-estado.pendiente { background: #fee2e2; color: #991b1b; }
 
-/* ===== 5. BOTONES DE SEGUIMIENTO (Imagen 1) ===== */
-.col-seguimiento-ajustada { width: 1%; white-space: nowrap; padding-right: 25px; }
+.btn-add-fast {
+    background: #4f46e5; /* Color Morado/Indigo elegante */
+    color: white;
+    padding: 16px 32px;
+    border-radius: 50px; /* Forma de píldora tipo App */
+    font-weight: 700;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4);
+    transition: all 0.3s ease;
+}
 
-/* Botón "Ver Reporte" */
+.btn-add-fast:hover {
+    background: #4338ca;
+    transform: translateY(-2px);
+    box-shadow: 0 20px 25px -5px rgba(79, 70, 229, 0.4);
+}
+
+/* ===== 7. BOTONES SEGUIMIENTO ===== */
 .diseno-btn-azul {
     background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe;
-    padding: 8px 18px; border-radius: 12px; font-weight: 700; font-size: 13px;
-    display: flex; align-items: center; gap: 10px; transition: all 0.2s;
-    text-decoration: none;
-}
-.diseno-btn-azul:hover { background: #dbeafe; border-color: #3b82f6; }
-.badge-circular { 
-    background: #2563eb; color: white; border-radius: 50%; 
-    width: 22px; height: 22px; display: flex; 
-    align-items: center; justify-content: center; font-size: 12px; font-weight: 800;
+    padding: 8px 18px; border-radius: 12px; font-weight: 700;
+    display: flex; align-items: center; gap: 10px; text-decoration: none;
 }
 
-/* Botón "Agregar Visita" */
-.diseno-btn-agregar {
-    background: white; color: #64748b; border: 1.5px dashed #cbd5e1;
-    padding: 8px 18px; border-radius: 12px; font-weight: 700; font-size: 13px;
-    display: flex; align-items: center; gap: 8px; text-decoration: none;
-    transition: all 0.2s;
-}
-.diseno-btn-agregar:hover { border-color: #8b5cf6; color: #8b5cf6; background: #f5f3ff; }
-.plus-icon { color: #8b5cf6; font-size: 18px; font-weight: bold; }
-
-/* ===== 6. BOTÓN NUEVO REGISTRO (Imagen 3 inferior) ===== */
-.floating-btn-container { margin-top: 20px; }
-.btn-add-fast {
-    color: #4f46e5; font-weight: 700; text-decoration: none;
-    display: flex; align-items: center; gap: 5px; font-size: 16px;
-    transition: color 0.2s;
-}
-.btn-add-fast:hover { color: #3730a3; }
-
-/* ===== 7. RESPONSIVE ===== */
+/* ===== 8. RESPONSIVE ===== */
 @media (max-width: 600px) {
     .stats-mini-container { grid-template-columns: 1fr; }
-    .mini-stat { padding: 15px; }
-    body { padding: 10px; }
-    .toolbar-acciones { justify-content: center; }
+    .login-container { margin: 20px; padding: 25px; }
 }
