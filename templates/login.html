@@ -1,57 +1,54 @@
 {% extends "base.html" %}
 {% block contenido %}
 
-<div class="login-card">
+<div class="login-screen">
+    <div class="login-card">
+        <div class="login-icon-box">⛪</div>
+        
+        <h2>Bienvenido</h2>
+        <p>Área de Gestión Pastoral</p>
 
-    <div class="login-header">
-        <div class="login-icon">⛪</div>
-        <h2>Acceso al Sistema</h2>
-        <p>Área privada de gestión de visitas</p>
-    </div>
+        {% if error %}
+            <div style="background: #fef2f2; color: #b91c1c; padding: 12px; border-radius: 15px; font-size: 0.85rem; margin-bottom: 20px; font-weight: 600; border: 1px solid #fee2e2;">
+                ⚠ {{ error }}
+            </div>
+        {% endif %}
 
-    <!-- ⏱️ Mensaje si la sesión expiró -->
-    {% if session.get("expirada") %}
-        <div class="login-warning">
-            ⏱️ Tu sesión expiró por inactividad. Inicia sesión nuevamente.
+        <form method="post">
+            <div class="app-input-group">
+                <label>Usuario</label>
+                <input 
+                    type="text" 
+                    name="usuario" 
+                    class="input-app" 
+                    placeholder="Tu nombre de usuario"
+                    required
+                    autofocus
+                >
+            </div>
+
+            <div class="app-input-group">
+                <label>Contraseña</label>
+                <input 
+                    type="password" 
+                    name="clave" 
+                    class="input-app" 
+                    placeholder="••••••••"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="btn-login-app">
+                Entrar al Sistema
+            </button>
+        </form>
+
+        <div style="margin-top: 30px;">
+            <a href="/" style="text-decoration: none; color: #64748b; font-size: 0.85rem; font-weight: 600; transition: 0.2s;" onmouseover="this.style.color='#3b82f6'" onmouseout="this.style.color='#64748b'">
+                ← Volver al registro público
+            </a>
         </div>
-    {% endif %}
-
-    {% if error %}
-        <div class="login-error">
-            ⚠ {{ error }}
-        </div>
-    {% endif %}
-
-    <form method="post" class="form-login">
-
-        <label>Usuario</label>
-        <input 
-            type="text" 
-            name="usuario" 
-            placeholder="Pastor, Secretaria o Asistente" 
-            required 
-            autofocus
-        >
-
-        <label>Contraseña</label>
-        <input 
-            type="password" 
-            name="clave" 
-            placeholder="Ingrese su contraseña" 
-            required
-        >
-
-        <button type="submit" class="btn-login">
-            🔓 Iniciar sesión
-        </button>
-
-    </form>
-
-    <div class="login-footer">
-        <p>Acceso exclusivo para personal autorizado</p>
-        <a href="/">← Volver al registro público</a>
     </div>
-
 </div>
 
 {% endblock %}
