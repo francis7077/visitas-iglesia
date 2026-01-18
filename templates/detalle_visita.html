@@ -1,111 +1,162 @@
 {% extends "base.html" %}
 {% block contenido %}
 
-<h2 class="titulo-principal">📖 Seguimiento: <span style="color:#4a6cf7;">{{ persona.nombre }}</span></h2>
+<style>
+    /* Estilos específicos para look de App */
+    .app-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 10px;
+    }
+    .app-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        padding: 20px;
+        margin-bottom: 20px;
+        border: 1px solid #f1f5f9;
+    }
+    .app-stat-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+    .app-stat-card {
+        background: #ffffff;
+        padding: 15px;
+        border-radius: 18px;
+        text-align: center;
+        border: 1px solid #e2e8f0;
+    }
+    .app-btn-save {
+        background: #10b981;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 16px;
+        font-weight: 700;
+        width: 100%;
+        cursor: pointer;
+        transition: transform 0.1s, background 0.2s;
+        box-shadow: 0 4px 0 #059669;
+    }
+    .app-btn-save:active {
+        transform: translateY(2px);
+        box-shadow: 0 2px 0 #059669;
+    }
+    .app-input {
+        width: 100%;
+        padding: 12px;
+        border-radius: 12px;
+        border: 1px solid #cbd5e1;
+        background: #f8fafc;
+        margin-top: 5px;
+        font-family: inherit;
+    }
+    .app-badge {
+        background: #e0e7ff;
+        color: #4338ca;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8em;
+        font-weight: 600;
+    }
+    .history-item {
+        border-bottom: 1px solid #f1f5f9;
+        padding: 15px 0;
+    }
+    .history-item:last-child { border: none; }
+</style>
 
-<div style="display: flex; gap: 15px; margin-bottom: 20px;">
-    <div class="tarjeta-perfil" style="flex: 1; text-align: center; background: #f8fafc; margin:0;">
-        <div style="font-size: 0.75em; color: #64748b; text-transform: uppercase; font-weight:700;">Total Contactos</div>
-        <div style="font-size: 1.8em; font-weight: 800; color: #1e40af;">{{ total_visitas }}</div>
+<div class="app-container">
+    
+    <div style="margin-bottom: 25px;">
+        <h2 style="font-size: 1.5rem; color: #1e293b; margin: 0;">📖 Seguimiento</h2>
+        <p style="color: #4a6cf7; font-weight: 700; font-size: 1.2rem; margin: 0;">{{ persona.nombre }}</p>
     </div>
-    <div class="tarjeta-perfil" style="flex: 1; text-align: center; background: #f8fafc; margin:0;">
-        <div style="font-size: 0.75em; color: #64748b; text-transform: uppercase; font-weight:700;">Última Visita</div>
-        <div style="font-size: 1.1em; font-weight: 800; padding-top: 5px; color: #334155;">
-            {{ ultima_visita.fecha_visita | formato_fecha if ultima_visita else 'Ninguna' }}
+
+    <div class="app-stat-grid">
+        <div class="app-stat-card">
+            <span style="display:block; font-size: 0.7em; color: #64748b; font-weight: 700; text-transform: uppercase;">Contactos</span>
+            <span style="font-size: 1.5em; font-weight: 800; color: #1e40af;">{{ total_visitas }}</span>
+        </div>
+        <div class="app-stat-card">
+            <span style="display:block; font-size: 0.7em; color: #64748b; font-weight: 700; text-transform: uppercase;">Última Visita</span>
+            <span style="font-size: 1em; font-weight: 700; color: #334155;">{{ ultima_visita.fecha_visita | formato_fecha if ultima_visita else 'Ninguna' }}</span>
         </div>
     </div>
-</div>
 
-<div class="tarjeta-perfil">
-    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 2px solid #f1f5f9; padding-bottom: 12px; margin-bottom: 15px;">
-        <h3 style="margin:0; font-size: 1.1em;">Historial Cronológico</h3>
-        <span class="badge ok">{{ visitas|length }} registros</span>
-    </div>
-
-    {% if visitas %}
-        <div class="tabla-contenedor" style="border-radius: 12px; border: 1px solid #e2e8f0;">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Ministerio / Visitante</th>
-                        <th>Observaciones</th>
-                        <th style="text-align:center">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for v in visitas %}
-                    <tr {% if loop.first %} style="background: #f0f7ff; border-left: 4px solid #3b82f6;" {% endif %}>
-                        <td style="white-space: nowrap;">
-                            <strong>{{ v.fecha_visita | formato_fecha }}</strong>
-                        </td>
-                        <td>
-                            <span style="color: #1e40af; font-weight: 600; font-size: 0.9em;">{{ v.visitado_por }}</span>
-                        </td>
-                        <td>
-                            <p style="color: #475569; font-size: 0.9em; margin:0; line-height:1.4;">{{ v.nota or "Sin observaciones." }}</p>
-                        </td>
-                        <td style="text-align:center">
-                            <div style="display: flex; justify-content: center; gap: 15px; font-size: 1.2em;">
-                                <a href="{{ url_for('editar_visita', id=v.id) }}" title="Editar" style="text-decoration:none;">✏️</a>
-                                <a href="{{ url_for('eliminar_visita', id=v.id) }}" title="Eliminar" 
-                                   onclick="return confirm('¿Eliminar este registro permanentemente?')" 
-                                   style="text-decoration:none;">🗑️</a>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <div class="app-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+            <h3 style="margin:0; font-size: 1rem; color: #1e293b;">Historial Cronológico</h3>
+            <span class="app-badge">{{ visitas|length }} registros</span>
         </div>
-    {% else %}
-        <div style="text-align: center; padding: 40px 20px; background: #fef2f2; border: 2px dashed #fecaca; border-radius: 16px;">
-            <div style="font-size: 3em; margin-bottom: 10px;">🕊️</div>
-            <strong style="color: #991b1b; display:block;">Sin historial de seguimiento todavía.</strong>
-            <p style="color: #b91c1c; font-size: 0.9em;">Es una gran oportunidad para realizar la primera visita.</p>
-        </div>
-    {% endif %}
-</div>
 
-<div class="tarjeta-perfil" style="border-top: 6px solid #10b981; background: #ffffff;">
-    <h3 style="color: #065f46; display: flex; align-items: center; gap: 10px; margin-top:0;">
-        <span>✨</span> Registrar Nueva Actividad
-    </h3>
-
-    <form method="post" style="margin-top: 20px;">
-        <div class="perfil-grid"> <div>
-                <label>Visitado por:</label>
-                <select name="visitado_por" required>
-                    <option value="" disabled selected>Seleccione Ministerio</option>
-                    <option>Sociedad de Jóvenes</option>
-                    <option>Sociedad de Damas</option>
-                    <option>Sociedad de Caballeros</option>
-                    <option>Directiva Local</option>
-                    <option>Familia Pastoral</option>
-                    <option>Visita Mixta</option>
-                </select>
+        {% if visitas %}
+            <div style="margin-top: 10px;">
+                {% for v in visitas %}
+                <div class="history-item">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <span style="font-size: 0.85rem; font-weight: 700; color: #1e40af; display: block;">{{ v.visitado_por }}</span>
+                            <span style="font-size: 0.75rem; color: #64748b;">{{ v.fecha_visita | formato_fecha }}</span>
+                        </div>
+                        <a href="{{ url_for('eliminar_visita', id=v.id) }}" onclick="return confirm('¿Eliminar?')" style="text-decoration:none; filter: grayscale(1);">🗑️</a>
+                    </div>
+                    <p style="color: #475569; font-size: 0.9rem; margin: 8px 0 0 0; line-height: 1.4;">{{ v.nota or "Sin observaciones." }}</p>
+                </div>
+                {% endfor %}
             </div>
-            <div>
-                <label>Fecha de la visita:</label>
-                <input type="date" name="fecha_visita" required value="{{ ahora.strftime('%Y-%m-%d') }}">
+        {% else %}
+            <div style="text-align: center; padding: 30px; background: #fff1f2; border-radius: 15px;">
+                <span style="font-size: 2rem;">🕊️</span>
+                <p style="color: #991b1b; font-weight: 600; margin: 5px 0 0 0;">Sin historial de seguimiento</p>
             </div>
-        </div>
+        {% endif %}
+    </div>
 
-        <div style="margin-top: 15px;">
-            <label>Nota / Observación Pastoral:</label>
-            <textarea name="nota" rows="4" placeholder="Detalle aquí lo conversado o peticiones de oración..." style="width: 100%; border-radius: 12px; padding: 12px; border: 1px solid #cbd5e1;"></textarea>
-        </div>
+    <div class="app-card" style="border-top: 5px solid #10b981;">
+        <h3 style="color: #065f46; font-size: 1.1rem; margin-top:0; display: flex; align-items: center; gap: 8px;">
+            <span>✨</span> Registrar Actividad
+        </h3>
 
-        <button type="submit" style="margin-top: 20px; width: 100%; background: #10b981; padding: 14px; font-size: 16px;">
-            💾 Guardar Seguimiento
-        </button>
-    </form>
-</div>
+        <form method="post" style="margin-top: 15px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div>
+                    <label style="font-size: 0.8rem; font-weight: 600; color: #475569;">Visitado por:</label>
+                    <select name="visitado_por" class="app-input" required>
+                        <option value="" disabled selected>Seleccione...</option>
+                        <option>Sociedad de Jóvenes</option>
+                        <option>Sociedad de Damas</option>
+                        <option>Sociedad de Caballeros</option>
+                        <option>Directiva Local</option>
+                        <option>Familia Pastoral</option>
+                        <option>Visita Mixta</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size: 0.8rem; font-weight: 600; color: #475569;">Fecha:</label>
+                    <input type="date" name="fecha_visita" class="app-input" required value="{{ ahora.strftime('%Y-%m-%d') }}">
+                </div>
+            </div>
 
-<div style="text-align:center; margin: 40px 0;">
-    <a href="{{ url_for('visitas') }}" style="color: #64748b; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
-        ⬅️ Volver al Listado General
-    </a>
+            <div style="margin-top: 15px;">
+                <label style="font-size: 0.8rem; font-weight: 600; color: #475569;">Nota Pastoral:</label>
+                <textarea name="nota" rows="3" class="app-input" placeholder="Detalles de la visita..."></textarea>
+            </div>
+
+            <button type="submit" class="app-btn-save" style="margin-top: 20px;">
+                💾 Guardar Seguimiento
+            </button>
+        </form>
+    </div>
+
+    <div style="text-align:center; margin-bottom: 40px;">
+        <a href="{{ url_for('visitas') }}" style="color: #94a3b8; font-weight: 600; text-decoration: none; font-size: 0.9rem;">
+            ← Volver al Listado
+        </a>
+    </div>
 </div>
 
 {% endblock %}
