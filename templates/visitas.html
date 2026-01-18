@@ -92,13 +92,66 @@
                     <span class="badge no">⏳ PENDIENTE</span>
                 {% endif %}
             </td>
-            <td class="col-detalle">
-                <a href="/visitar/{{ r['id'] }}" onclick="event.stopPropagation()">
-                    {% if r['total_visitas'] > 0 %}
-                        <span class="count-pill">{{ r['total_visitas'] }}</span> Ver visita
-                    {% else %}Agregar visita{% endif %}
-                </a>
-            </td>
+           <td class="col-detalle" style="padding: 10px; vertical-align: middle;">
+    <style>
+        .btn-app-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background-color: #f1f5f9;
+            color: #1e40af;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            border-left: 4px solid #3b82f6; /* Barra que no excede el texto */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .btn-app-action:hover {
+            background-color: #e0e7ff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-left-color: #1d4ed8;
+        }
+
+        .btn-app-action:active {
+            transform: translateY(0);
+        }
+
+        .count-pill-mini {
+            background: #3b82f6;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .text-add {
+            color: #059669;
+        }
+        .border-add {
+            border-left-color: #10b981 !important;
+        }
+    </style>
+
+    <a href="/visitar/{{ r['id'] }}" 
+       onclick="event.stopPropagation()" 
+       class="btn-app-action {% if r['total_visitas'] == 0 %}border-add{% endif %}">
+        
+        {% if r['total_visitas'] > 0 %}
+            <span class="count-pill-mini">{{ r['total_visitas'] }}</span>
+            <span>Ver historial</span>
+            <span style="font-size: 0.7em; opacity: 0.6;">▶</span>
+        {% else %}
+            <span style="font-size: 1.1rem; line-height: 0;">+</span>
+            <span class="text-add">Agregar visita</span>
+        {% endif %}
+    </a>
+</td>
         </tr>
     {% endfor %}
     </tbody>
