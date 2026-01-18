@@ -22,7 +22,7 @@
 
     <div class="tarjeta-perfil stat-card verde">
         <div class="stat-num">{{ visitados }}</div>
-        <div class="stat-label">Seguimientos Listos</div>
+        <div class="stat-label">Visitas Realizadas</div>
     </div>
 
     <div class="tarjeta-perfil stat-card naranja">
@@ -87,7 +87,7 @@
             <td class="col-invitado">{{ r['invitado_por'] or "Espontáneo" }}</td>
             <td class="col-estado">
                 {% if r['visitado'] == 'Si' %}
-                    <span class="badge ok">✔ LISTO</span>
+                    <span class="badge ok">✔ Visitado</span>
                 {% else %}
                     <span class="badge no">⏳ PENDIENTE</span>
                 {% endif %}
@@ -95,7 +95,7 @@
             <td class="col-detalle">
                 <a href="/visitar/{{ r['id'] }}" onclick="event.stopPropagation()">
                     {% if r['total_visitas'] > 0 %}
-                        <span class="count-pill">{{ r['total_visitas'] }}</span> Reportes
+                        <span class="count-pill">{{ r['total_visitas'] }}</span> Ver visita
                     {% else %}Agregar visita{% endif %}
                 </a>
             </td>
