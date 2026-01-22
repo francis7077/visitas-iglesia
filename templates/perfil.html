@@ -6,7 +6,7 @@
         👤 Expediente del Visitante
     </h2>
 
-    <div class="tarjeta-perfil perfil-premium" style="background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; margin: 0 10px;">
+    <div class="tarjeta-perfil perfil-premium" style="background: white; border-radius: 28px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; margin: 0 10px;">
         
         <div class="perfil-header" style="background: linear-gradient(to bottom, #f8fafc, #ffffff); padding: 30px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
             
@@ -22,19 +22,19 @@
             </div>
 
             <div class="estado">
-    {# Intentamos validar por varias vías para asegurar que detecte la visita #}
-    {% set tiene_visitas = p.visitas|length > 0 or p.historial|length > 0 or p.seguimientos|length > 0 %}
-    
-    {% if p.visitado == 'Si' or tiene_visitas %}
-        <span class="badge" style="background: #dcfce7; color: #15803d; padding: 10px 18px; border-radius: 50px; font-weight: 800; font-size: 11px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #bbf7d0;">
-            <span style="width: 8px; height: 8px; background: #22c55e; border-radius: 50%;"></span> VISITADO
-        </span>
-    {% else %}
-        <span class="badge" style="background: #fee2e2; color: #b91c1c; padding: 10px 18px; border-radius: 50px; font-weight: 800; font-size: 11px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #fecaca;">
-            <span style="width: 8px; height: 8px; background: #ef4444; border-radius: 50%; animation: pulse 2s infinite;"></span> PENDIENTE
-        </span>
-    {% endif %}
-</div>
+                {# LÓGICA CORREGIDA: Solo será VISITADO si realmente hay registros en el historial #}
+                {% set registros = p.visitas|length if p.visitas else 0 %}
+                
+                {% if registros > 0 %}
+                    <span class="badge" style="background: #dcfce7; color: #15803d; padding: 10px 18px; border-radius: 50px; font-weight: 800; font-size: 11px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #bbf7d0;">
+                        <span style="width: 8px; height: 8px; background: #22c55e; border-radius: 50%;"></span> VISITADO
+                    </span>
+                {% else %}
+                    <span class="badge" style="background: #fee2e2; color: #b91c1c; padding: 10px 18px; border-radius: 50px; font-weight: 800; font-size: 11px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #fecaca;">
+                        <span style="width: 8px; height: 8px; background: #ef4444; border-radius: 50%; animation: pulse 2s infinite;"></span> PENDIENTE
+                    </span>
+                {% endif %}
+            </div>
         </div>
 
         <div class="perfil-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1px; background: #f1f5f9;">
@@ -73,47 +73,95 @@
             </div>
         </div>
 
-        {% if p.visitado != 'Si' or p.visitas|length == 0 %}
+        {# Notificación si no hay historial #}
+        {% if registros == 0 %}
             <div style="background: #fff7ed; padding: 18px 30px; display: flex; align-items: center; gap: 15px; border-top: 1px solid #ffedd5;">
                 <span style="font-size: 24px;">🔔</span>
                 <p style="margin: 0; font-size: 13px; color: #9a3412; font-weight: 700; line-height: 1.4;">
-                    Atención: Este visitante aún no cuenta con registros de seguimiento en su historial.
+                    Este expediente no tiene registros de visitas. Su estado es Pendiente.
                 </p>
             </div>
         {% endif %}
 
         <div style="padding: 25px 30px; background: #ffffff; text-align: center;">
-            <a href="/visitar/{{ p.id }}" style="display: flex; align-items: center; justify-content: center; gap: 10px; background: #3b82f6; color: white; text-decoration: none; padding: 16px; border-radius: 18px; font-weight: 800; font-size: 15px; box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.4); transition: all 0.3s;">
+            <a href="/visitar/{{ p.id }}" class="btn-app-primario">
                 <span>📝</span> Gestionar Seguimiento Pastoral
             </a>
         </div>
     </div>
 
-    <div class="acciones-perfil-app" style="margin: 30px 10px; display: flex; flex-direction: column; gap: 12px;">
-        <a href="/editar/{{ p.id }}" style="text-align: center; background: #f1f5f9; color: #334155; text-decoration: none; padding: 15px; border-radius: 18px; font-weight: 700; font-size: 14px; border: 1px solid #e2e8f0;">
+    <div class="acciones-perfil-app" style="margin: 30px 10px; display: flex; flex-direction: column; gap: 15px;">
+        <a href="/editar/{{ p.id }}" class="btn-app-secundario">
             ✏️ Editar Información del Perfil
         </a>
         
-        <a href="/visitas" style="text-align: center; background: white; color: #64748b; text-decoration: none; padding: 15px; border-radius: 18px; font-weight: 700; font-size: 14px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
-            <span style="font-size: 18px;">⬅</span> Volver al Listado de Personas
+        <a href="/visitas" class="btn-app-volver">
+            <span>⬅</span> Volver al Listado de Personas
         </a>
     </div>
 </div>
 
 <style>
+    /* Estilos de Botones tipo App Moderna */
+    .btn-app-primario {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        text-decoration: none;
+        padding: 18px;
+        border-radius: 20px;
+        font-weight: 800;
+        font-size: 16px;
+        box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+        transition: all 0.3s;
+    }
+
+    .btn-app-secundario {
+        text-align: center;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        color: #334155;
+        text-decoration: none;
+        padding: 16px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 14px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        transition: all 0.3s;
+    }
+
+    .btn-app-volver {
+        text-align: center;
+        background: white;
+        color: #64748b;
+        text-decoration: none;
+        padding: 16px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 14px;
+        border: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: all 0.3s;
+    }
+
+    /* Efectos de pulso y hover */
     @keyframes pulse {
         0% { transform: scale(1); opacity: 1; }
         50% { transform: scale(1.4); opacity: 0.4; }
         100% { transform: scale(1); opacity: 1; }
     }
     
-    .dato { transition: background 0.2s ease; cursor: default; }
-    .dato:hover { background: #fbfcfe !important; }
-    
-    .acciones-perfil-app a:active {
-        transform: scale(0.97);
-        background: #e2e8f0;
+    .btn-app-primario:active, .btn-app-secundario:active, .btn-app-volver:active {
+        transform: scale(0.96);
     }
+
+    .dato:hover { background: #fbfcfe !important; }
 
     @media (max-width: 600px) {
         .perfil-header { text-align: center; justify-content: center; flex-direction: column; }
